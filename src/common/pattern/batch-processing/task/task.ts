@@ -2,12 +2,12 @@ import _, { uniqueId } from 'lodash';
 import { GeneralError } from '@common/error/general.error';
 import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
 import { RetryOption } from '@common/pattern/batch-processing/common/common';
-import { TaskEventEmitter } from './task.event-emitter';
+import { TaskEventEmitter } from '@common/pattern/batch-processing/task/task.event-emitter';
 import { logger } from '@common/logger/winston.logger';
 import {
   validateTaskCircularDependency,
   validateTaskPayload,
-} from '../helper/validation.helper';
+} from '@common/pattern/batch-processing/helper/validation.helper';
 
 /**
  * @enum TaskState
@@ -174,7 +174,7 @@ export class Task {
     this.action = action;
 
     validateTaskPayload(this.payload, this.name);
-    validateTaskCircularDependency(this, this.name);
+    validateTaskCircularDependency(this);
 
     if (!this.action || typeof this.action !== 'function') {
       logger.error(`Task ${this.name}: Invalid action provided.`);

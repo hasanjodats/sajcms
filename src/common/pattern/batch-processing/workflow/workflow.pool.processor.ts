@@ -2,7 +2,6 @@ import {
   Workflow,
   WorkflowState,
 } from '@common/pattern/batch-processing/workflow/workflow';
-import { WorkflowInvoker } from './workflow.invoker';
 import { logger } from '@common/logger/winston.logger';
 import { WorkflowError, WorkflowErrorType } from '@common/error/workflow.error';
 

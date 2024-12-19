@@ -1,6 +1,10 @@
 import { logger } from '@common/logger/winston.logger';
-import { Workflow, WorkflowResponse, WorkflowResponseState } from './workflow';
-import { PoolProcessor } from './workflow.pool.processor';
+import {
+  Workflow,
+  WorkflowResponse,
+  WorkflowResponseState,
+} from '@common/pattern/batch-processing/workflow/workflow';
+import { PoolProcessor } from '@common/pattern/batch-processing/workflow/workflow.pool.processor';
 
 /**
  * The WorkflowInvoker class determines how workflows are executed.

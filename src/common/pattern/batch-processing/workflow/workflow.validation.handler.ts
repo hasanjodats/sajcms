@@ -1,7 +1,10 @@
 import { WorkflowError, WorkflowErrorType } from '@common/error/workflow.error';
-import { WorkflowResponseState } from './workflow';
-import { Workflow, WorkflowResponse } from './workflow';
-import { WorkflowHandler } from './workflow.handler';
+import { WorkflowResponseState } from '@common/pattern/batch-processing/workflow/workflow';
+import {
+  Workflow,
+  WorkflowResponse,
+} from '@common/pattern/batch-processing/workflow/workflow';
+import { WorkflowHandler } from '@common/pattern/batch-processing/workflow/workflow.handler';
 import { logger } from '@common/logger/winston.logger';
 
 /**
@@ -12,9 +15,13 @@ import { logger } from '@common/logger/winston.logger';
  */
 export class WorkflowValidationHandler extends WorkflowHandler {
   async handle(workflow: Workflow): Promise<WorkflowResponse> {
-    logger.info(`Workflow ${workflow.name}(${workflow.id}) validation has started.`);
+    logger.info(
+      `Workflow ${workflow.name}(${workflow.id}) validation has started.`,
+    );
     if (!workflow.name || !workflow.id) {
-      logger.info(`Workflow ${workflow.name}(${workflow.id}) validation has failed.`);
+      logger.info(
+        `Workflow ${workflow.name}(${workflow.id}) validation has failed.`,
+      );
       return {
         state: WorkflowResponseState.Failure,
         error: new WorkflowError(
@@ -24,7 +31,9 @@ export class WorkflowValidationHandler extends WorkflowHandler {
         ),
       };
     }
-    logger.info(`Workflow ${workflow.name}(${workflow.id}) has passed validation.`);
+    logger.info(
+      `Workflow ${workflow.name}(${workflow.id}) has passed validation.`,
+    );
     return super.handle(workflow);
   }
 }

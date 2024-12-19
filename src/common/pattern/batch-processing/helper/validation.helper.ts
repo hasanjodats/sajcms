@@ -1,60 +1,43 @@
 import { logger } from '@common/logger/winston.logger';
-import { hasCircularDependency } from '../common/common';
+import { hasCircularDependency } from '@common/pattern/batch-processing/common/common';
+import { GeneralError } from '@common/error/general.error'; // Import your custom error
 
-/**
- * Validate initial state input
- * @param initialState - The initial state of workflow.
- * @param name - The name of the workflow.
- * @returns {void}.
- */
+const validateCircularDependency = (
+  instance: any,
+  type: 'workflow' | 'task',
+) => {
+  if (hasCircularDependency(instance)) {
+    const message = `Circular dependency detected in ${type} ${instance.name || 'unknown'}`;
+    logger.error(message);
+    throw new GeneralError('CircularDependencyError', message); // Throw custom error
+  }
+};
+
 export const validateWorkflowInitialState = (
   initialState: any,
   name: string,
-): void => {
+) => {
   if (typeof initialState !== 'object') {
-    logger.error(`InitialState for workflow ${name} must be an object.`);
-    throw new Error(`InitialState for workflow ${name} must be an object.`);
+    const message = `InitialState for workflow ${name} must be an object.`;
+    logger.error(message);
+    throw new GeneralError('InvalidInitialState', message); // Throw custom error
   }
+  // Add more specific validation for initialState here if needed
 };
 
-/**
- * Validate circular dependency
- * @param instance - The workflow object.
- * @param name - The name of  the workflow.
- * @returns {void}.
- */
-export const validateWorkflowCircularDependency = (
-  instance: any,
-  name: string,
-): void => {
-  if (hasCircularDependency(instance)) {
-    logger.error(`Circular dependency detected in workflow ${name}`);
-    throw new Error(`Circular dependency detected in workflow ${name}`);
-  }
+export const validateWorkflowCircularDependency = (instance: any) => {
+  validateCircularDependency(instance, 'workflow');
 };
 
-/**
- * Validate payload input
- * @param payload - The payload of task.
- * @param name - The name of the task.
- * @returns {void}.
- */
 export const validateTaskPayload = (payload: any, name: string) => {
   if (typeof payload !== 'object') {
-    logger.error(`Payload for task ${name} must be an object.`);
-    throw new Error(`Payload for task ${name} must be an object.`);
+    const message = `Payload for task ${name} must be an object.`;
+    logger.error(message);
+    throw new GeneralError('InvalidTaskPayload', message); // Throw custom error
   }
+  // Add more specific validation for payload here if needed
 };
 
-/**
- * Validate circular dependency
- * @param instance - The workflow object.
- * @param name - The name of  the workflow.
- * @returns {void}.
- */
-export const validateTaskCircularDependency = (instance: any, name: string) => {
-  if (hasCircularDependency(instance)) {
-    logger.error(`Circular dependency detected in task ${name}`);
-    throw new Error(`Circular dependency detected in task ${name}`);
-  }
+export const validateTaskCircularDependency = (instance: any) => {
+  validateCircularDependency(instance, 'task');
 };

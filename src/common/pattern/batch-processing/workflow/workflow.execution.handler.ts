@@ -11,18 +11,20 @@ import {
   WorkflowState,
 } from '@common/pattern/batch-processing/workflow/workflow';
 import { WorkflowHandler } from '@common/pattern/batch-processing/workflow/workflow.handler';
+import { WorkflowEvent } from '@common/pattern/batch-processing/workflow/workflow.event-emitter';
 
 /**
  * The WorkflowExecutionHandler execute all taks of the workflow.
  */
 export class WorkflowExecutionHandler extends WorkflowHandler {
   public async handle(workflow: Workflow): Promise<WorkflowResponse> {
+    workflow.events.emit(WorkflowEvent.Start, workflow);
     logger.info(
       `Workflow ${workflow.name}(${workflow.id}) has started execution.`,
     );
     workflow.startTime = Date.now();
     try {
-      workflow.events.emit('progress', workflow, 0);
+      workflow.events.emit(WorkflowEvent.Progress, workflow, 0);
 
       let index = 1;
 
@@ -41,7 +43,7 @@ export class WorkflowExecutionHandler extends WorkflowHandler {
           );
 
           let progress = Math.round((index / workflow.tasks.length) * 100);
-          workflow.events.emit('progress', workflow, progress);
+          workflow.events.emit(WorkflowEvent.Progress, workflow, progress);
 
           index = index + 1;
 
@@ -73,7 +75,7 @@ export class WorkflowExecutionHandler extends WorkflowHandler {
         WorkflowErrorType.ExecutionFailed,
         error,
       );
-      workflow.events.emit('failure', workflow, workflowError);
+      workflow.events.emit(WorkflowEvent.Failure, workflow, workflowError);
       logger.error(
         `Workflow ${workflow.name}(${workflow.id}) execution has failed.`,
         error,

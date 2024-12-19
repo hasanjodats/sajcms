@@ -1,14 +1,14 @@
 import { uniqueId } from 'lodash';
 import { GeneralError } from '@common/error/general.error';
 import { Task } from '@common/pattern/batch-processing/task/task';
-import { TaskHandler } from '../task/task.handler';
-import { WorkflowHandler } from './workflow.handler';
-import { WorkflowEventEmitter } from './workflow.event-emitter';
+import { TaskHandler } from '@common/pattern/batch-processing/task/task.handler';
+import { WorkflowHandler } from '@common/pattern/batch-processing/workflow/workflow.handler';
+import { WorkflowEventEmitter } from '@common/pattern/batch-processing/workflow/workflow.event-emitter';
 import { logger } from '@common/logger/winston.logger';
 import {
   validateWorkflowCircularDependency,
   validateWorkflowInitialState,
-} from '../helper/validation.helper';
+} from '@common/pattern/batch-processing/helper/validation.helper';
 
 /**
  * @enum WorkflowState
@@ -172,7 +172,7 @@ export class Workflow {
     this.events = events || new WorkflowEventEmitter();
 
     validateWorkflowInitialState(this.initialState, this.name);
-    validateWorkflowCircularDependency(this, this.name);
+    validateWorkflowCircularDependency(this);
 
     if (!Array.isArray(this.tasks)) {
       logger.error(`Tasks for workflow ${this.name} must be an array.`);

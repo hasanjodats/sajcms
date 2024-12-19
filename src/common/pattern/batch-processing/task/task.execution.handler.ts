@@ -12,17 +12,19 @@ import {
 import { Utility } from '@common/helper/function.util';
 import { logger } from '@common/logger/winston.logger';
 import { TaskError, TaskErrorType } from '@common/error/task.error';
+import { TaskEvent } from '@common/pattern/batch-processing/task/task.event-emitter';
 
 /**
  * The TaskExecutionHandler execute task of the workflow.
  */
 export class TaskExecutionHandler extends TaskHandler {
   public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
+    task.events.emit(TaskEvent.Start, task);
     logger.info(`Task ${task.name}(${task.id}) has started execution.`);
     task.startTime = Date.now();
 
     try {
-      task.events.emit('progress', task, 0);
+      task.events.emit(TaskEvent.Progress, task, 0);
 
       // Perform task execution
       const response = await this.performTaskExecution(task, workflow);
@@ -35,8 +37,8 @@ export class TaskExecutionHandler extends TaskHandler {
       } else {
         task.state = TaskState.Completed;
         task.response = response;
-        task.events.emit('success', task, response);
-        task.events.emit('progress', task, 100);
+        task.events.emit(TaskEvent.Complete, task, response);
+        task.events.emit(TaskEvent.Progress, task, 100);
       }
       logger.info(`Task ${task.name}(${task.id}) has executed successfully.`);
       return response;
@@ -46,7 +48,7 @@ export class TaskExecutionHandler extends TaskHandler {
         TaskErrorType.ExecutionFailed,
         error,
       );
-      task.events.emit('failure', task, taskError);
+      task.events.emit(TaskEvent.Failure, task, taskError);
 
       logger.error(
         `Task ${task.name}(${task.id}) execution has failed.`,

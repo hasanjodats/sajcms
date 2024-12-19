@@ -9,8 +9,8 @@ import {
   TaskResponseState,
   TaskState,
 } from '@common/pattern/batch-processing/task/task';
-import { TaskValidationHandler } from '../task/task.validation.handler';
-import { WorkflowValidationHandler } from '../workflow/workflow.validation.handler';
+import { TaskValidationHandler } from '@common/pattern/batch-processing/task/task.validation.handler';
+import { WorkflowValidationHandler } from '@common/pattern/batch-processing/workflow/workflow.validation.handler';
 
 describe('hasCircularDependency', () => {
   it('should return true for circular dependency', () => {

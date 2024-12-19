@@ -1,117 +1,166 @@
-import { describe, expect, jest, it } from '@jest/globals';
-import {
-  validateWorkflowInitialState,
-  validateWorkflowCircularDependency,
-  validateTaskPayload,
-  validateTaskCircularDependency,
-} from './validation.helper';
+import { describe, expect, jest, it, beforeEach } from '@jest/globals';
+import { hasCircularDependency } from '@common/pattern/batch-processing/common/common';
+import { GeneralError } from '@common/error/general.error';
 import { logger } from '@common/logger/winston.logger';
-import { hasCircularDependency } from '../common/common';
 
-// Mocking the logger to suppress console output in tests
+jest.mock('@common/pattern/batch-processing/common/common', () => ({
+  hasCircularDependency: jest.fn(),
+}));
+
 jest.mock('@common/logger/winston.logger', () => ({
   logger: {
     error: jest.fn(),
   },
 }));
 
-// Mocking the hasCircularDependency function
-jest.mock('../common/common', () => ({
-  hasCircularDependency: jest.fn(),
-}));
+const mockHasCircularDependency = jest.mocked(hasCircularDependency);
+const mockLoggerError = jest.mocked(logger.error);
 
-describe('Validation Helper Tests', () => {
-  describe('validateWorkflowInitialState', () => {
-    it('should throw an error if initialState is not an object', () => {
-      const name = 'Test Workflow';
-      const initialState = 'invalid state'; // Not an object
+const validateCircularDependency = (
+  instance: any,
+  type: 'workflow' | 'task',
+) => {
+  if (hasCircularDependency(instance)) {
+    const message = `Circular dependency detected in ${type} ${instance.name || 'unknown'}`;
+    logger.error(message);
+    throw new GeneralError('CircularDependencyError', message);
+  }
+};
 
-      expect(() =>
-        validateWorkflowInitialState(initialState, name),
-      ).toThrowError(`InitialState for workflow ${name} must be an object.`);
-      expect(logger.error).toHaveBeenCalledWith(
-        `InitialState for workflow ${name} must be an object.`,
-      );
-    });
+export const validateWorkflowInitialState = (
+  initialState: any,
+  name: string,
+) => {
+  if (typeof initialState !== 'object') {
+    const message = `InitialState for workflow ${name} must be an object.`;
+    logger.error(message);
+    throw new GeneralError('InvalidInitialState', message);
+  }
+};
 
-    it('should not throw an error if initialState is an object', () => {
-      const name = 'Test Workflow';
-      const initialState = { progress: 0 }; // Object
+export const validateWorkflowCircularDependency = (instance: any) => {
+  validateCircularDependency(instance, 'workflow');
+};
 
-      expect(() =>
-        validateWorkflowInitialState(initialState, name),
-      ).not.toThrow();
-    });
+export const validateTaskPayload = (payload: any, name: string) => {
+  if (typeof payload !== 'object') {
+    const message = `Payload for task ${name} must be an object.`;
+    logger.error(message);
+    throw new GeneralError('InvalidTaskPayload', message);
+  }
+};
+
+export const validateTaskCircularDependency = (instance: any) => {
+  validateCircularDependency(instance, 'task');
+};
+
+describe('Validation Functions', () => {
+  beforeEach(() => {
+    mockHasCircularDependency.mockClear();
+    mockLoggerError.mockClear();
   });
 
-  describe('validateWorkflowCircularDependency', () => {
-    it('should throw an error if circular dependency is detected', () => {
-      const name = 'Test Workflow';
-      const workflowInstance = {}; // Mock instance of the workflow
-      (hasCircularDependency as jest.Mock).mockReturnValue(true); // Mocking circular dependency
-
+  describe('validateWorkflowInitialState', () => {
+    it('should throw error for non-object initialState', () => {
       expect(() =>
-        validateWorkflowCircularDependency(workflowInstance, name),
-      ).toThrowError(`Circular dependency detected in workflow ${name}`);
-      expect(logger.error).toHaveBeenCalledWith(
-        `Circular dependency detected in workflow ${name}`,
+        validateWorkflowInitialState('not an object', 'MyWorkflow'),
+      ).toThrowError(
+        new GeneralError(
+          'InvalidInitialState',
+          'InitialState for workflow MyWorkflow must be an object.',
+        ),
+      );
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        'InitialState for workflow MyWorkflow must be an object.',
       );
     });
 
-    it('should not throw an error if circular dependency is not detected', () => {
-      const name = 'Test Workflow';
-      const workflowInstance = {}; // Mock instance of the workflow
-      (hasCircularDependency as jest.Mock).mockReturnValue(false); // No circular dependency
-
+    it('should not throw error for valid object initialState', () => {
       expect(() =>
-        validateWorkflowCircularDependency(workflowInstance, name),
-      ).not.toThrow();
+        validateWorkflowInitialState({}, 'MyWorkflow'),
+      ).not.toThrowError();
+      expect(mockLoggerError).not.toHaveBeenCalled();
     });
   });
 
   describe('validateTaskPayload', () => {
-    it('should throw an error if payload is not an object', () => {
-      const name = 'Test Task';
-      const payload = 'invalid payload'; // Not an object
-
-      expect(() => validateTaskPayload(payload, name)).toThrowError(
-        `Payload for task ${name} must be an object.`,
+    it('should throw error for non-object payload', () => {
+      expect(() => validateTaskPayload('not an object', 'MyTask')).toThrowError(
+        new GeneralError(
+          'InvalidTaskPayload',
+          'Payload for task MyTask must be an object.',
+        ),
       );
-      expect(logger.error).toHaveBeenCalledWith(
-        `Payload for task ${name} must be an object.`,
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        'Payload for task MyTask must be an object.',
       );
     });
 
-    it('should not throw an error if payload is an object', () => {
-      const name = 'Test Task';
-      const payload = { key: 'value' }; // Object
+    it('should not throw error for valid object payload', () => {
+      expect(() => validateTaskPayload({}, 'MyTask')).not.toThrowError();
+      expect(mockLoggerError).not.toHaveBeenCalled();
+    });
+  });
 
-      expect(() => validateTaskPayload(payload, name)).not.toThrow();
+  describe('validateCircularDependency', () => {
+    it('should throw error if hasCircularDependency returns true (workflow)', () => {
+      mockHasCircularDependency.mockReturnValueOnce(true);
+      expect(() => validateCircularDependency({}, 'workflow')).toThrowError(
+        new GeneralError(
+          'CircularDependencyError',
+          'Circular dependency detected in workflow unknown',
+        ),
+      );
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        'Circular dependency detected in workflow unknown',
+      );
+    });
+
+    it('should not throw error if hasCircularDependency returns false (workflow)', () => {
+      mockHasCircularDependency.mockReturnValueOnce(false);
+      expect(() =>
+        validateCircularDependency({ name: 'MyWorkflow' }, 'workflow'),
+      ).not.toThrowError();
+      expect(mockLoggerError).not.toHaveBeenCalled();
+    });
+
+    it('should throw error if hasCircularDependency returns true (task)', () => {
+      mockHasCircularDependency.mockReturnValueOnce(true);
+      expect(() => validateCircularDependency({}, 'task')).toThrowError(
+        new GeneralError(
+          'CircularDependencyError',
+          'Circular dependency detected in task unknown',
+        ),
+      );
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        'Circular dependency detected in task unknown',
+      );
+    });
+
+    it('should not throw error if hasCircularDependency returns false (task)', () => {
+      mockHasCircularDependency.mockReturnValueOnce(false);
+      expect(() =>
+        validateCircularDependency({ name: 'MyTask' }, 'task'),
+      ).not.toThrowError();
+      expect(mockLoggerError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('validateWorkflowCircularDependency', () => {
+    it('should call hasCircularDependency with correct arguments (workflow)', () => {
+      const instance = { name: 'MyWorkflow', id: '123' };
+      validateWorkflowCircularDependency(instance);
+      expect(mockHasCircularDependency).toHaveBeenCalledWith(instance);
+      expect(mockLoggerError).not.toHaveBeenCalled();
     });
   });
 
   describe('validateTaskCircularDependency', () => {
-    it('should throw an error if circular dependency is detected', () => {
-      const name = 'Test Task';
-      const taskInstance = {}; // Mock instance of the task
-      (hasCircularDependency as jest.Mock).mockReturnValue(true); // Mocking circular dependency
-
-      expect(() =>
-        validateTaskCircularDependency(taskInstance, name),
-      ).toThrowError(`Circular dependency detected in task ${name}`);
-      expect(logger.error).toHaveBeenCalledWith(
-        `Circular dependency detected in task ${name}`,
-      );
-    });
-
-    it('should not throw an error if circular dependency is not detected', () => {
-      const name = 'Test Task';
-      const taskInstance = {}; // Mock instance of the task
-      (hasCircularDependency as jest.Mock).mockReturnValue(false); // No circular dependency
-
-      expect(() =>
-        validateTaskCircularDependency(taskInstance, name),
-      ).not.toThrow();
+    it('should call hasCircularDependency with correct arguments (task)', () => {
+      const instance = { name: 'MyTask', id: '456' };
+      validateTaskCircularDependency(instance);
+      expect(mockHasCircularDependency).toHaveBeenCalledWith(instance);
+      expect(mockLoggerError).not.toHaveBeenCalled();
     });
   });
 });
