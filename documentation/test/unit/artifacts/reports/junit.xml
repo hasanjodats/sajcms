@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="SAJCMS Unit Tests" tests="36" failures="0" errors="0" time="3.487">
+  <testsuite name="Utility Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:31" time="3.183" tests="12">
+    <testcase classname="Utility Tests TimeoutError should create a TimeoutError with correct properties" name="Utility Tests TimeoutError should create a TimeoutError with correct properties" time="0.012">
+    </testcase>
+    <testcase classname="Utility Tests RetryError should create a RetryError with correct properties" name="Utility Tests RetryError should create a RetryError with correct properties" time="0.001">
+    </testcase>
+    <testcase classname="Utility Tests isTimeoutError should correctly identify TimeoutError" name="Utility Tests isTimeoutError should correctly identify TimeoutError" time="0.001">
+    </testcase>
+    <testcase classname="Utility Tests isTimeoutError should return false for non-TimeoutError instances" name="Utility Tests isTimeoutError should return false for non-TimeoutError instances" time="0.001">
+    </testcase>
+    <testcase classname="Utility Tests isRetryError should correctly identify RetryError" name="Utility Tests isRetryError should correctly identify RetryError" time="0.001">
+    </testcase>
+    <testcase classname="Utility Tests isRetryError should return false for non-RetryError instances" name="Utility Tests isRetryError should return false for non-RetryError instances" time="0">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withTimeout should resolve if the function completes within the timeout" name="Utility Tests Utility.withTimeout should resolve if the function completes within the timeout" time="0.001">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" name="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" time="1.002">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" name="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" time="0.101">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withRetry should reject with RetryError after exceeding retry attempts" name="Utility Tests Utility.withRetry should reject with RetryError after exceeding retry attempts" time="0.202">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withRetry should use exponential backoff if enabled" name="Utility Tests Utility.withRetry should use exponential backoff if enabled" time="0.603">
+    </testcase>
+    <testcase classname="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" name="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" time="0.104">
+    </testcase>
+  </testsuite>
+  <testsuite name="hasCircularDependency" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:34" time="0.115" tests="2">
+    <testcase classname="hasCircularDependency should return true for circular dependency" name="hasCircularDependency should return true for circular dependency" time="0.001">
+    </testcase>
+    <testcase classname="hasCircularDependency should return false for no circular dependency" name="hasCircularDependency should return false for no circular dependency" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Validation Helper Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:34" time="0.036" tests="8">
+    <testcase classname="Validation Helper Tests validateWorkflowInitialState should throw an error if initialState is not an object" name="Validation Helper Tests validateWorkflowInitialState should throw an error if initialState is not an object" time="0.004">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateWorkflowInitialState should not throw an error if initialState is an object" name="Validation Helper Tests validateWorkflowInitialState should not throw an error if initialState is an object" time="0">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateWorkflowCircularDependency should throw an error if circular dependency is detected" name="Validation Helper Tests validateWorkflowCircularDependency should throw an error if circular dependency is detected" time="0.001">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateWorkflowCircularDependency should not throw an error if circular dependency is not detected" name="Validation Helper Tests validateWorkflowCircularDependency should not throw an error if circular dependency is not detected" time="0">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateTaskPayload should throw an error if payload is not an object" name="Validation Helper Tests validateTaskPayload should throw an error if payload is not an object" time="0">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateTaskPayload should not throw an error if payload is an object" name="Validation Helper Tests validateTaskPayload should not throw an error if payload is an object" time="0">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateTaskCircularDependency should throw an error if circular dependency is detected" name="Validation Helper Tests validateTaskCircularDependency should throw an error if circular dependency is detected" time="0">
+    </testcase>
+    <testcase classname="Validation Helper Tests validateTaskCircularDependency should not throw an error if circular dependency is not detected" name="Validation Helper Tests validateTaskCircularDependency should not throw an error if circular dependency is not detected" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="WorkflowError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:34" time="0.033" tests="4">
+    <testcase classname="WorkflowError Class should create a WorkflowError with correct message and properties" name="WorkflowError Class should create a WorkflowError with correct message and properties" time="0.007">
+    </testcase>
+    <testcase classname="WorkflowError Class should include the cause if provided" name="WorkflowError Class should include the cause if provided" time="0.001">
+    </testcase>
+    <testcase classname="WorkflowError Class should include the error code if provided" name="WorkflowError Class should include the error code if provided" time="0">
+    </testcase>
+    <testcase classname="WorkflowError Class should include the correct timestamp if provided" name="WorkflowError Class should include the correct timestamp if provided" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="TaskError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:34" time="0.025" tests="4">
+    <testcase classname="TaskError Class should create a TaskError with correct message and properties" name="TaskError Class should create a TaskError with correct message and properties" time="0.002">
+    </testcase>
+    <testcase classname="TaskError Class should include the error code if provided" name="TaskError Class should include the error code if provided" time="0.001">
+    </testcase>
+    <testcase classname="TaskError Class should include cause if provided" name="TaskError Class should include cause if provided" time="0">
+    </testcase>
+    <testcase classname="TaskError Class should include timestamp in the error message" name="TaskError Class should include timestamp in the error message" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="GeneralError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-17T22:46:34" time="0.024" tests="6">
+    <testcase classname="GeneralError Class should create an instance with the correct properties" name="GeneralError Class should create an instance with the correct properties" time="0.002">
+    </testcase>
+    <testcase classname="GeneralError Class should default the cause to &quot;No additional cause&quot; if not provided" name="GeneralError Class should default the cause to &quot;No additional cause&quot; if not provided" time="0.001">
+    </testcase>
+    <testcase classname="GeneralError Class should return a formatted string from toString method" name="GeneralError Class should return a formatted string from toString method" time="0">
+    </testcase>
+    <testcase classname="GeneralError Class should handle missing stack trace correctly" name="GeneralError Class should handle missing stack trace correctly" time="0.001">
+    </testcase>
+    <testcase classname="GeneralError Class should identify a GeneralError instance using isGeneralError" name="GeneralError Class should identify a GeneralError instance using isGeneralError" time="0">
+    </testcase>
+    <testcase classname="GeneralError Class should return false when error is not an instance of GeneralError" name="GeneralError Class should return false when error is not an instance of GeneralError" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>
