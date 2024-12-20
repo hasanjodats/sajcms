@@ -31,6 +31,21 @@ export class WorkflowValidationHandler extends WorkflowHandler {
         ),
       };
     }
+
+    if(!workflow.config?.JIT && !workflow.container){
+      logger.info(
+        `Workflow ${workflow.name}(${workflow.id}) of type defered must have a valid container.`,
+      );
+      return {
+        state: WorkflowResponseState.Failure,
+        error: new WorkflowError(
+          workflow,
+          WorkflowErrorType.ValidationFailed,
+          `Workflow ${workflow.name}(${workflow.id}) of type defered must have a valid container.`,
+        ),
+      };
+    }
+
     logger.info(
       `Workflow ${workflow.name}(${workflow.id}) has passed validation.`,
     );

@@ -21,6 +21,11 @@ import {
 import { WorkflowExecutionHandler } from '@common/pattern/batch-processing/workflow/workflow.execution.handler';
 import { WorkflowInvoker } from '@common/pattern/batch-processing/workflow/workflow.invoker';
 import { WorkflowValidationHandler } from '@common/pattern/batch-processing/workflow/workflow.validation.handler';
+import dataProcessingPlugin from './plugins/data.processing.plugin';
+import { CorePluginList } from './plugins/plugin.list';
+import { CorePluginContainer } from './plugins/plugin.container';
+
+CorePluginContainer.registerPlugin(dataProcessingPlugin, { multiplier: 3 });
 
 const taskHandlers = new TaskValidationHandler();
 const workflowHandlers = new WorkflowValidationHandler();
@@ -85,35 +90,14 @@ const workflow1 = new Workflow({
     new Task({
       name: 'Task1',
       id: 'T_1',
-      action: async (task, workflow) => {
-        if (task.config?.execution?.state?.progress === 10) {
-          return {
-            state: TaskResponseState.Success,
-            result: 'Task 1 completed.',
-          };
-        } else {
-          task.progress(10);
-          return {
-            state: TaskResponseState.Pending,
-            result: 'Task 1 Pending.',
-          };
-        }
-      },
-      events: taskEvent,
-    }),
-    new Task({
-      name: 'Task2',
-      id: 'T_2',
-      action: async (task, workflow) => ({
-        state: TaskResponseState.Success,
-        result: 'Task 2 completed.',
-      }),
+      plugin: CorePluginList.DataProcessing,
       events: taskEvent,
     }),
   ],
   taskHandlerChain: taskHandlers,
   workflowHandlerChain: workflowHandlers,
   events: workflowEvent,
+  container: CorePluginContainer,
 });
 
 const workflow2 = new Workflow({

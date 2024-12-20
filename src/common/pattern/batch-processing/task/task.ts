@@ -104,7 +104,8 @@ export interface TaskOptions {
   dependencies?: Workflow[];
   payload?: any;
   events?: TaskEventEmitter;
-  action: (task: Task, workflow: Workflow) => Promise<TaskResponse>;
+  action?: (task: Task, workflow: Workflow) => Promise<TaskResponse>;
+  plugin?: string;
 }
 
 /**
@@ -139,7 +140,9 @@ export class Task {
   /** The payload of each task */
   public payload?: any;
   /** The task function that accepts task and workflow as parameters */
-  public action: (task: Task, workflow: Workflow) => Promise<TaskResponse>;
+  public action?: (task: Task, workflow: Workflow) => Promise<TaskResponse>;
+  /** The task plugin for defered workflow */
+  public plugin?: string;
   /** The start time of execution */
   public startTime?: number;
   /** The response returned after task execution */
@@ -158,6 +161,7 @@ export class Task {
       dependencies,
       payload,
       action,
+      plugin,
       events,
     } = options;
 
@@ -172,14 +176,10 @@ export class Task {
     this.payload = payload || {};
     this.events = events || new TaskEventEmitter();
     this.action = action;
+    this.plugin = plugin;
 
     validateTaskPayload(this.payload, this.name);
     validateTaskCircularDependency(this);
-
-    if (!this.action || typeof this.action !== 'function') {
-      logger.error(`Task ${this.name}: Invalid action provided.`);
-      throw new Error(`Task ${this.name}: Invalid action provided.`);
-    }
   }
 
   /**

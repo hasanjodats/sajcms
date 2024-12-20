@@ -29,8 +29,8 @@ module.exports = {
     {
       ...common,
       name: 'index',
-      script: 'src/index.ts',
-      // watch: ['src/microservices/core', 'src/common'],
+      script: 'src/microservices/core/index.ts',
+      watch: ['src/microservices/core', 'src/common'],
     },
     // {
     //   ...common,

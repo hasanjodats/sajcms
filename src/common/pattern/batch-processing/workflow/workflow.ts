@@ -9,6 +9,7 @@ import {
   validateWorkflowCircularDependency,
   validateWorkflowInitialState,
 } from '@common/pattern/batch-processing/helper/validation.helper';
+import MapContainer, { StaticThis } from '@common/pattern/batch-processing/common/container';
 
 /**
  * @enum WorkflowState
@@ -103,6 +104,7 @@ export interface WorkflowOptions {
   taskHandlerChain: TaskHandler;
   workflowHandlerChain: WorkflowHandler;
   events?: WorkflowEventEmitter;
+  container?: StaticThis;
 }
 
 /**
@@ -143,6 +145,7 @@ export class Workflow {
   public workflowHandlerChain: WorkflowHandler;
   /** Workflow EventEmitter instance */
   public events: WorkflowEventEmitter;
+  public container?: StaticThis;
 
   public constructor(options: WorkflowOptions) {
     const {
@@ -157,6 +160,7 @@ export class Workflow {
       taskHandlerChain,
       workflowHandlerChain,
       events,
+      container,
     } = options;
     const unique = uniqueId();
     this.id = id || `W_${unique}`;
@@ -170,6 +174,7 @@ export class Workflow {
     this.taskHandlerChain = taskHandlerChain;
     this.workflowHandlerChain = workflowHandlerChain;
     this.events = events || new WorkflowEventEmitter();
+    this.container = container;
 
     validateWorkflowInitialState(this.initialState, this.name);
     validateWorkflowCircularDependency(this);
