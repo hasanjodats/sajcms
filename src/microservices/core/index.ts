@@ -47,11 +47,11 @@ taskEvent.on(TaskEvent.Complete, (task, result) => {
 });
 
 taskEvent.on(TaskEvent.Start, (task) => {
-  logger.error(`Task ${task.name}(${task.id}) has started.`);
+  logger.info(`Task ${task.name}(${task.id}) has started.`);
 });
 
 taskEvent.on(TaskEvent.Failure, (task, error) => {
-  logger.error(`Task ${task.name}(${task.id}) failed with error:`, error);
+  logger.info(`Task ${task.name}(${task.id}) failed with error:`, error);
 });
 
 taskEvent.on(TaskEvent.Progress, (task, progress) => {
@@ -66,7 +66,7 @@ workflowEvent.on(WorkflowEvent.Complete, (workflow, result) => {
 });
 
 workflowEvent.on(WorkflowEvent.Start, (workflow) => {
-  logger.error(`Workflow ${workflow.name}(${workflow.id}) has started.`);
+  logger.info(`Workflow ${workflow.name}(${workflow.id}) has started.`);
 });
 
 workflowEvent.on(WorkflowEvent.Failure, (workflow, error) => {
