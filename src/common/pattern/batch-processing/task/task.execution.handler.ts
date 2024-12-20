@@ -13,18 +13,18 @@ import { Utility } from '@common/helper/function.util';
 import { logger } from '@common/logger/winston.logger';
 import { TaskError, TaskErrorType } from '@common/error/task.error';
 import { TaskEvent } from '@common/pattern/batch-processing/task/task.event-emitter';
-import { ActionPlugin } from '@common/pattern/plugin/action.plugin';
+import { Action } from '@common/pattern/batch-processing/common/action';
 
 /**
  * The TaskExecutionHandler execute task of the workflow.
  */
 export class TaskExecutionHandler extends TaskHandler {
-  public async executePlugin(
-    plugin: ActionPlugin,
+  public async executeAction(
+    action: Action,
     task: Task,
     workflow: Workflow,
   ): Promise<TaskResponse> {
-    return await plugin.execute(task, workflow, task.payload);
+    return await action.execute(task, workflow, task.payload);
   }
 
   public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
@@ -40,8 +40,8 @@ export class TaskExecutionHandler extends TaskHandler {
         // Perform task execution
         response = await this.performTaskExecution(task, workflow);
       } else {
-        response = await this.executePlugin(
-          workflow.container?.providers.get(task.plugin!)!,
+        response = await this.executeAction(
+          workflow.container?.providers.get(task.action as string)!,
           task,
           workflow,
         );
@@ -100,7 +100,13 @@ export class TaskExecutionHandler extends TaskHandler {
   ): Promise<TaskResponse> {
     // Wrap task action with timeout and retry
     const taskWithTimeout = Utility.withTimeout(
-      () => task.action!(task, workflow),
+      () =>
+        (
+          task.action! as (
+            task: Task,
+            workflow: Workflow,
+          ) => Promise<TaskResponse>
+        )(task, workflow),
       task.config?.retry?.timeout ?? Infinity,
     );
     const taskWithRetry = Utility.withRetry(

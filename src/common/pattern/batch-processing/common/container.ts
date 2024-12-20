@@ -1,44 +1,42 @@
 import { GeneralError } from '@common/error/general.error';
-import { ActionPlugin } from '@common/pattern/plugin/action.plugin';
-import { Task, TaskResponse } from '../task/task';
-import { Workflow } from '../workflow/workflow';
-
-// export type StaticThis<T, K> = { new (): T; providers: K };
+import { Action } from '@common/pattern/batch-processing/common/action';
+import { Task, TaskResponse } from '@common/pattern/batch-processing/task/task';
+import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
 
 export type StaticThis = {
   new (): MapContainer;
-  providers: Map<string, ActionPlugin>;
+  providers: Map<string, Action>;
 };
 
 export default abstract class MapContainer {
-  public static providers: Map<string, ActionPlugin>;
+  public static providers: Map<string, Action>;
 
-  public abstract initialize(): Map<string, ActionPlugin>;
+  public abstract initialize(): Map<string, Action>;
 
-  public static registerPlugin(
+  public static registerAction(
     this: StaticThis,
-    plugin: ActionPlugin,
+    action: Action,
     config?: any,
   ) {
     if (!this.providers) {
       this.providers = new this().initialize();
     }
 
-    if (this.providers.has(plugin.name)) {
+    if (this.providers.has(action.name)) {
       throw new GeneralError(
-        'PluginExists',
-        `Plugin with name "${plugin.name}" already registered.`,
+        'ActionExists',
+        `Action with name "${action.name}" already registered.`,
       );
     }
 
-    this.providers.set(plugin.name, plugin);
+    this.providers.set(action.name, action);
 
-    if (plugin.configure) {
-      plugin.configure(config);
+    if (action.configure) {
+      action.configure(config);
     }
   }
 
-  public static async executePlugin(
+  public static async executeAction(
     this: StaticThis,
     name: string,
     task: Task,
@@ -49,11 +47,11 @@ export default abstract class MapContainer {
     }
 
     if (!this.providers.has(name)) {
-      throw new GeneralError('PluginNotFound', `Plugin "${name}" not found.`);
+      throw new GeneralError('ActionNotFound', `Action "${name}" not found.`);
     }
 
-    const plugin = this.providers.get(name);
+    const action = this.providers.get(name);
 
-    return await plugin!.execute(task, workflow, task.payload);
+    return await action!.execute(task, workflow, task.payload);
   }
 }

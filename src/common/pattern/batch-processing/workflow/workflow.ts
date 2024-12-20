@@ -9,7 +9,7 @@ import {
   validateWorkflowCircularDependency,
   validateWorkflowInitialState,
 } from '@common/pattern/batch-processing/helper/validation.helper';
-import MapContainer, { StaticThis } from '@common/pattern/batch-processing/common/container';
+import { StaticThis } from '@common/pattern/batch-processing/common/container';
 
 /**
  * @enum WorkflowState

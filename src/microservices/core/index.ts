@@ -21,11 +21,11 @@ import {
 import { WorkflowExecutionHandler } from '@common/pattern/batch-processing/workflow/workflow.execution.handler';
 import { WorkflowInvoker } from '@common/pattern/batch-processing/workflow/workflow.invoker';
 import { WorkflowValidationHandler } from '@common/pattern/batch-processing/workflow/workflow.validation.handler';
-import dataProcessingPlugin from './plugins/data.processing.plugin';
-import { CorePluginList } from './plugins/plugin.list';
-import { CorePluginContainer } from './plugins/plugin.container';
+import dataProcessingAction from '@core/actions/data.processing.action';
+import { CoreActionList } from '@core/actions/action.list';
+import { CoreActionContainer } from '@core/actions/action.container';
 
-CorePluginContainer.registerPlugin(dataProcessingPlugin, { multiplier: 3 });
+CoreActionContainer.registerAction(dataProcessingAction, { multiplier: 3 });
 
 const taskHandlers = new TaskValidationHandler();
 const workflowHandlers = new WorkflowValidationHandler();
@@ -90,14 +90,14 @@ const workflow1 = new Workflow({
     new Task({
       name: 'Task1',
       id: 'T_1',
-      plugin: CorePluginList.DataProcessing,
+      action: CoreActionList.DataProcessing,
       events: taskEvent,
     }),
   ],
   taskHandlerChain: taskHandlers,
   workflowHandlerChain: workflowHandlers,
   events: workflowEvent,
-  container: CorePluginContainer,
+  container: CoreActionContainer,
 });
 
 const workflow2 = new Workflow({

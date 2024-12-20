@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --build",
-    "start": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "start": "node -r ts-node/register -r tsconfig-paths/register src/microservices/core/index.ts",
     "start:dev": "NODE_ENV=development DEBUG=true ./node_modules/pm2/bin/pm2-dev start config/pm2/ecosystem.config.js",
     "start:prod": "NODE_ENV=production DEBUG=false ./node_modules/pm2/bin/pm2 start config/pm2/ecosystem.config.js",
     "pm2": "./node_modules/pm2/bin/pm2 ${npm_config_cmd}",

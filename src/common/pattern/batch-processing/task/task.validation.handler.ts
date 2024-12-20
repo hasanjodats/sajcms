@@ -29,33 +29,6 @@ export class TaskValidationHandler extends TaskHandler {
       };
     }
 
-    if (
-      workflow.config?.JIT &&
-      (!task.action || typeof task.action !== 'function')
-    ) {
-      logger.error(`Task ${task.name}: Invalid action provided.`);
-      return {
-        state: TaskResponseState.Failure,
-        error: new TaskError(
-          task,
-          TaskErrorType.ValidationFailed,
-          `Task ${task.name}: Invalid action provided.`,
-        ),
-      };
-    }
-
-    if (!workflow.config?.JIT && !task.plugin) {
-      logger.error(`Task ${task.name}: Invalid plugin provided.`);
-      return {
-        state: TaskResponseState.Failure,
-        error: new TaskError(
-          task,
-          TaskErrorType.ValidationFailed,
-          `Task ${task.name}: Invalid plugin provided.`,
-        ),
-      };
-    }
-
     logger.info(`Task ${task.name}(${task.id}) has passed validation.`);
     return super.handle(task, workflow);
   }

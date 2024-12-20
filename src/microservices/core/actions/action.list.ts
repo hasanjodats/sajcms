@@ -1,3 +1,3 @@
-export enum CorePluginList {
+export enum CoreActionList {
   DataProcessing = 'DATAPROCESSING',
 }
