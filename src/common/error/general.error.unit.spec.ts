@@ -1,62 +1,61 @@
 import { describe, expect, it } from '@jest/globals';
 import { GeneralError, isGeneralError } from '@common/error/general.error';
 
-describe('GeneralError Class', () => {
-  it('should create an instance with the correct properties', () => {
-    const cause = { input: 'test@example.com' };
-    const error = new GeneralError(
-      'ValidationError',
-      'The input is invalid',
-      cause,
-    );
-
-    expect(error.name).toBe('ValidationError');
-    expect(error.message).toBe('The input is invalid');
-    expect(error.cause).toEqual(cause);
-    expect(error.stack).toBeDefined();
-  });
-
-  it('should default the cause to "No additional cause" if not provided', () => {
-    const error = new GeneralError('CustomError', 'An error occurred');
-
-    expect(error.name).toBe('CustomError');
+describe('GeneralError', () => {
+  it('should create a GeneralError instance with default values', () => {
+    const error = new GeneralError();
+    expect(error.name).toBe('GeneralError');
     expect(error.message).toBe('An error occurred');
     expect(error.cause).toBe('No additional cause');
     expect(error.stack).toBeDefined();
   });
 
-  it('should return a formatted string from toString method', () => {
-    const cause = { input: 'test@example.com' };
+  it('should create a GeneralError instance with custom values', () => {
+    const cause = { detail: 'Invalid input' };
     const error = new GeneralError(
       'ValidationError',
-      'The input is invalid',
+      'The input data is invalid',
       cause,
     );
-    const expectedString = `ValidationError: The input is invalid\nCaused by: ${JSON.stringify(cause)}\nStack: ${error.stack || 'N/A'}`;
-
-    expect(error.toString()).toBe(expectedString);
+    expect(error.name).toBe('ValidationError');
+    expect(error.message).toBe('The input data is invalid');
+    expect(error.cause).toEqual(cause);
   });
 
-  it('should handle missing stack trace correctly', () => {
+  it('should return a detailed string representation', () => {
+    const cause = { field: 'email', issue: 'Invalid format' };
+    const error = new GeneralError(
+      'ValidationError',
+      'Invalid email address',
+      cause,
+    );
+    const errorString = error.toString();
+    expect(errorString).toContain('ValidationError');
+    expect(errorString).toContain('Invalid email address');
+    expect(errorString).toContain(JSON.stringify(cause, null, 2));
+  });
+
+  it('should handle non-object causes in the string representation', () => {
     const error = new GeneralError(
       'CustomError',
-      'An error occurred without stack trace',
+      'An error occurred',
+      'Cause of the error',
     );
-
-    const result = error.toString();
-    expect(result).toContain(
-      'CustomError: An error occurred without stack trace',
-    );
-    expect(result).toContain('Stack:');
+    const errorString = error.toString();
+    expect(errorString).toContain('CustomError');
+    expect(errorString).toContain('An error occurred');
+    expect(errorString).toContain('Cause of the error');
   });
 
-  it('should identify a GeneralError instance using isGeneralError', () => {
-    const error = new GeneralError('TestError', 'Test message');
+  it('should identify an error as GeneralError', () => {
+    const error = new GeneralError();
     expect(isGeneralError(error)).toBe(true);
+    expect(isGeneralError(new Error())).toBe(false);
   });
 
-  it('should return false when error is not an instance of GeneralError', () => {
-    const error = new Error('Regular error');
-    expect(isGeneralError(error)).toBe(false);
+  it('should work with stack trace', () => {
+    const error = new GeneralError('StackError', 'Error with stack');
+    expect(error.stack).toBeDefined();
+    expect(error.stack).toContain('StackError');
   });
 });

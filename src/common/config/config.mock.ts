@@ -1,7 +1,7 @@
 import { config as original } from '@common/config/config';
 
 export const config: typeof original = {
-  nodeEnv: 'bdd-test',
+  nodeEnv: 'test',
   debug: false,
   instanceId: 0,
   serverAddress: 'https://127.0.0.1',
@@ -17,4 +17,5 @@ export const config: typeof original = {
     loggin: false,
   },
   systemExchange: 'testcms',
+  kafkajsNoPartitionerWarning: '1',
 };

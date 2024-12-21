@@ -1,4 +1,5 @@
 import { createLogger, format, transports } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 // Define a custom log format
 const customFormat = format.combine(
@@ -10,23 +11,34 @@ const customFormat = format.combine(
   ),
 );
 
+// Determine the log level based on the environment (development or production)
+const logLevel = process.env.NODE_ENV === 'production' ? 'warn' : 'debug';
+
 // Winston logger configuration
 export const logger = createLogger({
-  level: 'info', // Set minimum log level (info, warn, error, debug)
+  level: logLevel, // Set dynamic log level based on environment
   format: customFormat,
   transports: [
-    // Console output for development
+    // Console output for development (colorized output for better readability)
     new transports.Console({
       format: format.combine(format.colorize(), customFormat),
     }),
-    // Log errors to a separate file
-    new transports.File({
-      filename: 'logs/error.log',
+    // Log errors to a separate file with daily rotation
+    new DailyRotateFile({
+      filename: 'logs/error-%DATE%.log',
       level: 'error',
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true, // Compress old logs
+      maxSize: '20m', // Max size per log file before rotation
+      maxFiles: '14d', // Keep logs for the last 14 days
     }),
-    // Log all activities to a general log file
-    new transports.File({
-      filename: 'logs/combined.log',
+    // Log all activities to a general log file with daily rotation
+    new DailyRotateFile({
+      filename: 'logs/combined-%DATE%.log',
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '30d', // Keep logs for the last 30 days
     }),
   ],
   exceptionHandlers: [

@@ -1,3 +1,4 @@
+import { describe, expect, it, jest } from '@jest/globals';
 import {
   Utility,
   TimeoutError,
@@ -5,7 +6,6 @@ import {
   isTimeoutError,
   isRetryError,
 } from '@common/helper/function.util';
-import { describe, expect, it, jest } from '@jest/globals';
 
 describe('Utility Tests', () => {
   describe('TimeoutError', () => {
