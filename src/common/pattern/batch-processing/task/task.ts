@@ -11,45 +11,46 @@ import {
 
 /**
  * @enum TaskState
- * Represents the possible states of a task.
+ * Represents the possible states of a task during its lifecycle.
  */
 export enum TaskState {
-  InProgress = 'INPROGRESS',
-  Waiting = 'WAITING',
-  Completed = 'COMPLETED',
+  InProgress = 'INPROGRESS', // The task is currently in progress
+  Waiting = 'WAITING', // The task is waiting to be executed
+  Completed = 'COMPLETED', // The task has been completed successfully
 }
 
 /**
  * @enum TaskResponseState
- * Represents the possible states of a task response.
+ * Represents the possible states of a task response after execution.
  */
 export enum TaskResponseState {
-  Pending = 'PENDING',
-  Failure = 'FAILURE',
-  Success = 'SUCCESS',
+  Pending = 'PENDING', // The task is pending execution
+  Failure = 'FAILURE', // The task execution has failed
+  Success = 'SUCCESS', // The task has completed successfully
 }
 
 /**
  * @interface TaskConfig
- * Holds the configuration for a task, including retry options.
+ * Represents the configuration settings for a task, including retry options and execution details.
  */
 export type TaskConfig = {
-  /** Retry option for the task */
+  /** Retry options for handling task retries in case of failure */
   retry?: RetryOption;
-  /** Execution info for the task */
+  /** Execution details for the task, including progress and last execution time */
   execution?: {
-    /** Execution state of the task */
+    /** The current progress of the task (Default is 0) */
     state?: {
-      /** Progress count of the task (Default is 0) */
       progress?: number;
-      /** The last execution time of the task (Default is 0) */
       lastExecutedTime?: number;
     };
-    /** The delay time between each execution of the task (Default is 1000) */
+    /** Delay time between task executions (Default is 1000 ms) */
     delay?: number;
   };
 };
 
+/**
+ * Default configuration settings for a task.
+ */
 export const DEFAULT_TASK_CONFIG: TaskConfig = {
   retry: { maximumAttempts: 1, attemptDelay: 1000, timeout: Infinity },
   execution: { delay: 1000, state: { progress: 0, lastExecutedTime: 0 } },
@@ -57,19 +58,20 @@ export const DEFAULT_TASK_CONFIG: TaskConfig = {
 
 /**
  * @interface TaskMetadata
- * Contains extra information about tasks.
+ * Represents metadata about the task, such as requester information and additional info.
  */
 export type TaskMetadata = {
-  /** Requester information */
+  /** Information about the caller requesting the task */
   caller?: {
-    /** Name of requester */
-    name: string;
-    /** Requester access point */
-    address: string;
+    name: string; // Name of the requester
+    address: string; // Address or endpoint of the requester
   };
-  additionalInfo?: { [key: string]: any };
+  additionalInfo?: { [key: string]: any }; // Any other additional information about the task
 };
 
+/**
+ * Default metadata for a task, used when no custom metadata is provided.
+ */
 export const DEFAULT_TASK_METADATA: TaskMetadata = {
   caller: {
     name: 'Unknown',
@@ -79,81 +81,64 @@ export const DEFAULT_TASK_METADATA: TaskMetadata = {
 
 /**
  * @interface TaskResponse
- * Represents the result of executing a task, including state, result, and error.
+ * Represents the result of executing a task, including the state, result, and any errors.
  */
 export type TaskResponse = {
-  /** The response state of task */
-  state: TaskResponseState;
-  /** The response data of running task */
-  result?: any;
-  /** The error object that contains information about the failed task */
-  error?: GeneralError;
+  state: TaskResponseState; // The state of the task response (e.g., success, failure)
+  result?: any; // The result of the task execution (if any)
+  error?: GeneralError; // Error object if the task failed
 };
 
 /**
  * @interface TaskOptions
- * Represents the task options.
+ * Represents the various options available for configuring a task.
  */
 export interface TaskOptions {
-  id?: string;
-  name?: string;
-  order?: number;
-  state?: TaskState;
-  config?: TaskConfig;
-  meta?: TaskMetadata;
-  dependencies?: Workflow[];
-  payload?: any;
-  events?: TaskEventEmitter;
-  action: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string;
-  undo?: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string;
+  id?: string; // The unique identifier for the task
+  name?: string; // The name of the task
+  order?: number; // The order of execution in the workflow
+  state?: TaskState; // The state of the task (in progress, waiting, completed)
+  config?: TaskConfig; // Configuration settings for the task
+  meta?: TaskMetadata; // Metadata associated with the task
+  dependencies?: Workflow[]; // Workflows that must complete before this task
+  payload?: any; // The data to be processed by the task
+  events?: TaskEventEmitter; // EventEmitter instance to handle task events
+  action: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string; // The action to execute for the task
+  undo?: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string; // Optional undo action for the task
 }
 
 /**
  * @class Task
- * Describes the structure of a task within a workflow, including its ID, name, state, configuration, and action function.
- * @event Task#start
- * Emitted when the task starts.
- * @event Task#progress
- * Emitted when the task ongoing.
- * @event Task#failure
- * Emitted when the task failed.
- * @event Task#complete
- * Emitted when the task completed.
- * @param {Task} task - The task instance.
- * @param {Workflow} workflow - The workflow instance.
+ * Represents a task within a workflow. Tasks can be executed, tracked for progress, and have dependencies.
+ * It includes an action that can be executed and optionally undone.
  */
 export class Task {
-  /** The unique identifier of each task */
-  public id: string;
-  /** The name of each task */
-  public name: string;
-  /** Order of tasks execution */
-  public order: number;
-  /** The state of task */
-  public state: TaskState;
-  /** The task configuration */
-  public config?: TaskConfig;
-  /** The extra information for the task */
-  public meta?: TaskMetadata;
-  /** Contains workflows that must execute before the task */
-  public dependencies?: Workflow[];
-  /** The payload of each task */
-  public payload?: any;
-  /** The task function that accepts task and workflow as parameters */
+  public id: string; // The unique identifier of the task
+  public name: string; // The name of the task
+  public order: number; // The order of execution in the workflow
+  public state: TaskState; // The current state of the task
+  public config?: TaskConfig; // The task's configuration settings
+  public meta?: TaskMetadata; // The task's metadata
+  public dependencies?: Workflow[]; // List of workflows that must execute before this task
+  public payload?: any; // The payload or data associated with the task
   public action:
     | ((task: Task, workflow: Workflow) => Promise<TaskResponse>)
-    | string;
-  /** The task function that accepts task and workflow as parameters */
+    | string; // The action function or string to execute the task
   public undo?:
     | ((task: Task, workflow: Workflow) => Promise<TaskResponse>)
-    | string;
-  /** The start time of execution */
-  public startTime?: number;
-  /** The response returned after task execution */
-  public response?: TaskResponse;
-  /** Task EventEmitter instance */
-  public events: TaskEventEmitter;
+    | string; // The optional undo action for the task
+  public startTime?: number; // The start time of the task execution
+  public response?: TaskResponse; // The response from the task execution
+  public events: TaskEventEmitter; // EventEmitter instance for task-related events
 
+  /**
+   * Creates a new task instance with the provided options.
+   *
+   * The constructor validates the task's payload and checks for circular dependencies.
+   * It also ensures that the action provided is valid (either a function or a string).
+   *
+   * @param options - The options to configure the task instance.
+   */
   public constructor(options: TaskOptions) {
     const {
       id,
@@ -182,9 +167,11 @@ export class Task {
     this.action = action;
     this.undo = undo;
 
+    // Validate the task payload and check for circular dependencies
     validateTaskPayload(this.payload, this.name);
     validateTaskCircularDependency(this);
 
+    // Validate that the action provided is either a function or a string
     if (
       !this.action ||
       (typeof this.action !== 'function' && typeof this.action !== 'string')
@@ -195,8 +182,11 @@ export class Task {
   }
 
   /**
-   * Change task complete percentage by code inside task
-   * @param percentage
+   * Updates the task's progress by setting the percentage of completion.
+   *
+   * This method updates the task configuration to reflect the current progress and the last execution time.
+   *
+   * @param percentage - The percentage of completion (0-100).
    */
   public progress(percentage: number): void {
     this.config = {

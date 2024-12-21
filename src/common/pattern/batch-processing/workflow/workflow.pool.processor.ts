@@ -7,28 +7,25 @@ import { WorkflowError, WorkflowErrorType } from '@common/error/workflow.error';
 
 /**
  * @class PoolProcessor
- * PoolProcessor class is designed to manage workflows that are not executed immediately (as with JIT workflows) but are instead queued for batch processing.
- * Uses a heartbeat mechanism for periodic execution and cleanup.
+ * The PoolProcessor class is responsible for managing workflows that are not executed immediately (like JIT workflows) but are instead queued for batch processing.
+ * It utilizes a heartbeat mechanism to periodically execute workflows and clean up completed ones.
  */
 export class PoolProcessor {
-  private workflowStorage: Map<string, Workflow>; // This will simulate storage
+  private workflowStorage: Map<string, Workflow>; // Simulates storage for queued workflows.
 
   public constructor() {
-    this.workflowStorage = new Map(); // Use an in-memory map for storage simulation
+    this.workflowStorage = new Map(); // Using an in-memory map to simulate workflow storage.
   }
 
   /**
-   * Manage the execution of workflows that are processed in a pool rather than immediately upon creation.
-   * @returns
-   * @public
-   */
-
-  /**
    * Adds a workflow to the processing queue.
-   * @param workflow - The workflow to be added to the queue.
-   * @throws {Error} If the workflow already exists in the storage.
+   * If the workflow is already in the queue, an error is thrown.
+   *
+   * @param {Workflow} workflow - The workflow to add to the pool for deferred processing.
+   * @throws {Error} If the workflow is already present in the storage, a WorkflowError is thrown.
    */
-  public addWorkflow(workflow: Workflow) {
+  public addWorkflow(workflow: Workflow): void {
+    // Check if the workflow already exists in the pool
     if (this.workflowStorage.has(workflow.id)) {
       const error = new WorkflowError(
         workflow,
@@ -40,92 +37,116 @@ export class PoolProcessor {
         `Workflow ${workflow.name}(${workflow.id}) already exists in pool.`,
         error,
       );
-      throw error;
+      throw error; // Throw an error if the workflow is already in the pool
     }
+
+    // Add the new workflow to the pool storage
     this.workflowStorage.set(workflow.id, workflow);
     logger.info(
-      `Workflow ${workflow.name}(${workflow.id}) has added to pool for process in defered mode.`,
+      `Workflow ${workflow.name}(${workflow.id}) has been added to the pool for deferred processing.`,
     );
   }
 
   /**
-   * Cleans up completed workflows from storage to free resources.
+   * Cleans up completed workflows from the pool storage to free resources.
+   * This method is used to remove workflows that have finished processing.
+   *
    * @private
    */
   private cleanupCompletedWorkflows(): void {
-    logger.info('Start cleaning up pool workflow storage.');
+    logger.info('Starting cleanup of completed workflows in the pool.');
+
+    // Iterate over the workflow storage and remove completed workflows
     for (let [id, workflow] of this.workflowStorage) {
       if (workflow.state === WorkflowState.Completed) {
         logger.info(
-          `Wrkflow ${workflow.name}(${workflow.id}) has completed and removed from pool workflow storage.`,
+          `Workflow ${workflow.name}(${workflow.id}) is completed and removed from pool storage.`,
         );
 
-        this.workflowStorage.delete(id); // Remove completed workflow from storage
+        // Remove the completed workflow from the pool storage
+        this.workflowStorage.delete(id);
       }
     }
   }
 
   /**
-   * Processes workflows in the queue and cleans up completed workflows.
-   * Called periodically by the heartbeat mechanism.
+   * Periodically processes workflows in the queue and cleans up completed ones.
+   * This method is triggered by the heartbeat mechanism at regular intervals.
+   *
    * @public
    * @async
-   * @returns {Promise<void>}
+   * @returns {Promise<void>} - A promise that resolves when the heartbeat cycle is complete.
    */
   public async heartbeat(): Promise<void> {
-    // Track workflows that are still in progress
     let inProgressWorkflows = 0;
+
+    // Iterate over workflows in the pool storage
     for (let [_, workflow] of this.workflowStorage) {
       try {
+        // Process workflows that are not yet completed
         if (workflow.state !== WorkflowState.Completed) {
           inProgressWorkflows++;
           logger.info(
-            `Start processing workflow ${workflow.name}(${workflow.id}).`,
+            `Starting to process workflow ${workflow.name}(${workflow.id}).`,
           );
-          await workflow.container?.init(); // Initialize container of workflow
+
+          // Initialize the workflow container and execute the workflow handler chain
+          await workflow.container?.init();
           const response = await workflow.workflowHandlerChain.handle(workflow);
-          this.workflowStorage.set(workflow.id, workflow); // Update the workflow in storage
+
+          // Update the workflow in storage with the response
+          this.workflowStorage.set(workflow.id, workflow);
         } else {
+          // Log if the workflow is already completed and not processed again
           logger.info(
-            `Workflow ${workflow.name}(${workflow.id}) is already completed.`,
+            `Workflow ${workflow.name}(${workflow.id}) has already completed.`,
           );
         }
       } catch (error: any) {
+        // Log an error if workflow processing fails
         logger.error(
-          `Error occured during processing workflow ${workflow.name}(${workflow.id}). ${error.message}`,
+          `Error occurred during processing workflow ${workflow.name}(${workflow.id}): ${error.message}`,
           error,
         );
       }
     }
 
-    // Perform cleanup of completed workflows after each heartbeat
+    // Perform cleanup of completed workflows if no workflows are in progress
     if (inProgressWorkflows === 0) {
-      logger.info('No active workflow.');
+      logger.info('No active workflows. Cleaning up completed workflows.');
       this.cleanupCompletedWorkflows();
     }
   }
 
   /**
-   * Starts a periodic heartbeat to process workflows.
-   * @param intervalMs - Interval between heartbeats in milliseconds.
+   * Starts a periodic heartbeat to process workflows at regular intervals.
+   * The heartbeat ensures that workflows are processed and completed workflows are cleaned up periodically.
+   *
+   * @param {number} intervalMs - The interval between heartbeats in milliseconds.
    * @public
    */
   public startHeartbeat(intervalMs: number): void {
-    logger.info(`Starting periodic heartbeat with interval: ${intervalMs}ms.`);
+    logger.info(
+      `Starting periodic heartbeat with an interval of ${intervalMs}ms.`,
+    );
+
+    // Set an interval to invoke the heartbeat method periodically
     const interval = setInterval(async () => {
       try {
-        await this.heartbeat(); // Call the heartbeat method periodically
+        await this.heartbeat(); // Call the heartbeat method to process workflows
 
+        // Stop the heartbeat if no workflows are left in the pool
         if (this.workflowStorage.size === 0) {
           logger.info('No workflows left in the queue. Stopping heartbeat.');
-          clearInterval(interval);
+          clearInterval(interval); // Stop the interval when all workflows are processed
         }
       } catch (error: any) {
+        // Log any errors that occur during the heartbeat execution
         logger.error(
-          `Error occured during heartbeat execution. ${error.message}`,
+          `Error occurred during heartbeat execution: ${error.message}`,
           error,
         );
       }
-    }, intervalMs); // Interval in milliseconds (e.g., 5000 for 5 seconds)
+    }, intervalMs); // Periodic interval in milliseconds (e.g., 5000 for 5 seconds)
   }
 }

@@ -36,13 +36,9 @@ export enum WorkflowResponseState {
  * Configuration for workflows, including retry options and a JIT (Just-In-Time) option.
  */
 export type WorkflowConfig = {
-  /** Just in time flag */
   JIT: boolean;
-  /** Execution info for the workflow */
   execution?: {
-    /** Execution state of the workflow */
     state: {
-      /** Progress count of the workflow */
       progress?: number;
     };
   };
@@ -58,11 +54,8 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowConfig = {
  * Contains extra information about workflows.
  */
 export type WorkflowMetadata = {
-  /** Requester information */
   caller?: {
-    /** Name of requester */
     name: string;
-    /** Requester access point */
     address: string;
   };
   additionalInfo?: { [key: string]: any };
@@ -80,11 +73,8 @@ export const DEFAULT_WORKFLOW_METADATA: WorkflowMetadata = {
  * Represents the result of executing a workflow, including state, result, and error.
  */
 export type WorkflowResponse = {
-  /** The response state of workflow */
   state: WorkflowResponseState;
-  /** The response data of running workflow */
   result?: any;
-  /** The error object that contains information about the failed workflow */
   error?: GeneralError;
 };
 
@@ -110,40 +100,19 @@ export interface WorkflowOptions {
 /**
  * @class Workflow
  * Describes the structure of a workflow, including its tasks, state, configuration, and dependencies.
- * @event Workflow#start
- * Emitted when the workflow starts.
- * @event Workflow#progress
- * Emitted when the workflow ongoing.
- * @event Workflow#failure
- * Emitted when the workflow failed.
- * @event Workflow#complete
- * Emitted when the workflow completed.
- * @param {Workflow} workflow - The workflow instance.
  */
 export class Workflow {
-  /** The unique identifier of each workflow */
   public id: string;
-  /** The name of each workflow */
   public name: string;
-  /** The initial state of each workflow */
   public initialState?: any;
-  /** The state of workflow */
   public state: WorkflowState;
-  /** The workflow configuration */
   public config?: WorkflowConfig;
-  /** The extra information of workflow */
   public meta?: WorkflowMetadata;
-  /** Contains workflows that must execute before the current workflow */
   public dependencies?: Workflow[];
-  /** The start time of execution */
   public startTime?: number;
-  /** Workflow's tasks */
   public tasks: Task[];
-  /** Task handlers */
   public taskHandlerChain: TaskHandler;
-  /** Workflow handlers */
   public workflowHandlerChain: WorkflowHandler;
-  /** Workflow EventEmitter instance */
   public events: WorkflowEventEmitter;
   public container?: ActionContainer;
 
@@ -210,8 +179,8 @@ export class Workflow {
   }
 
   /**
-   * Change workflow complete percentage by code inside task
-   * @param percentage
+   * Update the progress of the workflow based on task completion.
+   * @param percentage - The progress percentage to update the workflow state.
    */
   public progress(percentage: number): void {
     this.config = {
@@ -223,5 +192,6 @@ export class Workflow {
         },
       },
     };
+    logger.info(`Workflow ${this.name} progress updated to ${percentage}%`);
   }
 }
