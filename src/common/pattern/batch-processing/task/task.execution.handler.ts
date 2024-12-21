@@ -24,7 +24,32 @@ export class TaskExecutionHandler extends TaskHandler {
     task: Task,
     workflow: Workflow,
   ): Promise<TaskResponse> {
-    return await action.execute(task, workflow, task.payload);
+    try {
+      return await action.execute(task, workflow);
+    } catch (error) {
+      if (action.undo) {
+        logger.error(
+          `Task ${task.name}(${task.id}) execution has failed. Undo operation has started.`,
+          error,
+        );
+
+        return await action.undo(task, workflow);
+      }
+    }
+
+    const taskError = new TaskError(
+      task,
+      TaskErrorType.ExecutionFailed,
+      `Task ${task.name}(${task.id}) execution has failed.`,
+    );
+    logger.error(
+      `Task ${task.name}(${task.id}) execution has failed.`,
+      taskError,
+    );
+    return {
+      state: TaskResponseState.Failure,
+      error: taskError,
+    };
   }
 
   public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {

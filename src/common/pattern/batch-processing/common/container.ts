@@ -52,6 +52,6 @@ export default abstract class MapContainer {
 
     const action = this.providers.get(name);
 
-    return await action!.execute(task, workflow, task.payload);
+    return await action!.execute(task, workflow);
   }
 }

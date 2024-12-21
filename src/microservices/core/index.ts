@@ -21,11 +21,11 @@ import {
 import { WorkflowExecutionHandler } from '@common/pattern/batch-processing/workflow/workflow.execution.handler';
 import { WorkflowInvoker } from '@common/pattern/batch-processing/workflow/workflow.invoker';
 import { WorkflowValidationHandler } from '@common/pattern/batch-processing/workflow/workflow.validation.handler';
-import dataProcessingAction from '@core/actions/data.processing.action';
+import DataProcessingAction from '@core/actions/data-processing';
 import { CoreActionList } from '@core/actions/action.list';
 import { CoreActionContainer } from '@core/actions/action.container';
 
-CoreActionContainer.registerAction(dataProcessingAction, { multiplier: 3 });
+CoreActionContainer.registerAction(DataProcessingAction, { multiplier: 3 });
 
 const taskHandlers = new TaskValidationHandler();
 const workflowHandlers = new WorkflowValidationHandler();

@@ -21,12 +21,9 @@ const DataProcessingAction: Action = {
       dataProcessingConfig,
     );
   },
-  execute: async (
-    task: Task,
-    workflow: Workflow,
-    payload: any,
-  ): Promise<TaskResponse> => {
+  execute: async (task: Task, workflow: Workflow): Promise<TaskResponse> => {
     if (task.config?.execution?.state?.progress === 10) {
+      throw "11";
       return {
         state: TaskResponseState.Success,
         result: 'Task 1 completed.',
@@ -38,6 +35,9 @@ const DataProcessingAction: Action = {
         result: 'Task 1 Pending.',
       };
     }
+  },
+  undo: async (task: Task, workflow: Workflow): Promise<TaskResponse> => {
+    return { state: TaskResponseState.Success };
   },
 };
 
