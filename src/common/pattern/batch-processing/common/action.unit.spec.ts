@@ -31,24 +31,19 @@ describe('Action', () => {
   });
 
   it('should execute the action successfully', async () => {
-    // فراخوانی متد execute
     const response = await action.execute(mockTask, mockWorkflow);
 
-    // بررسی اینکه متد execute با آرگومان‌های صحیح فراخوانی شده است
     expect(action.execute).toHaveBeenCalledWith(mockTask, mockWorkflow);
-    // بررسی اینکه نتیجه همان چیزی است که انتظار داریم
     expect(response).toEqual({
-      state: TaskResponseState.Success, // بررسی state
+      state: TaskResponseState.Success,
     });
   });
 
   it('should configure the action if configure method is provided', async () => {
     const config = { setting: 'value' };
 
-    // فراخوانی متد configure
     await action.configure!(config);
 
-    // بررسی اینکه متد configure با آرگومان‌های صحیح فراخوانی شده است
     expect(action.configure).toHaveBeenCalledWith(config);
   });
 });
