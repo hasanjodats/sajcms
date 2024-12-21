@@ -1,57 +1,53 @@
 import { GeneralError } from '@common/error/general.error';
 import { Action } from '@common/pattern/batch-processing/common/action';
-import { Task, TaskResponse } from '@common/pattern/batch-processing/task/task';
-import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
 
-export type StaticThis = {
-  new (): MapContainer;
-  providers: Map<string, Action>;
-};
+export default class ActionContainer {
+  private providers: Map<string, Action> = new Map();
 
-export default abstract class MapContainer {
-  public static providers: Map<string, Action>;
-
-  public abstract initialize(): Map<string, Action>;
-
-  public static registerAction(
-    this: StaticThis,
-    action: Action,
-    config?: any,
-  ) {
-    if (!this.providers) {
-      this.providers = new this().initialize();
-    }
-
+  /**
+   * Register a new action.
+   * @param action The action to register.
+   * @param config Optional configuration for the action.
+   */
+  public registerAction(action: Action, config?: any): void {
     if (this.providers.has(action.name)) {
       throw new GeneralError(
         'ActionExists',
-        `Action with name "${action.name}" already registered.`,
+        `Action with name "${action.name}" is already registered.`,
       );
     }
 
+    // Add action to providers
     this.providers.set(action.name, action);
 
+    // Configure the action if a configure method exists
     if (action.configure) {
       action.configure(config);
     }
   }
 
-  public static async executeAction(
-    this: StaticThis,
-    name: string,
-    task: Task,
-    workflow: Workflow,
-  ): Promise<TaskResponse> {
-    if (!this.providers) {
-      this.providers = new this().initialize();
-    }
+  /**
+   * Execute a registered action by name.
+   * @param name The name of the action to execute.
+   * @param task The task object.
+   * @param workflow The workflow object.
+   * @returns TaskResponse
+   */
+  public getAction(name: string): Action {
+    const action = this.providers.get(name);
 
-    if (!this.providers.has(name)) {
+    if (!action) {
       throw new GeneralError('ActionNotFound', `Action "${name}" not found.`);
     }
 
-    const action = this.providers.get(name);
+    return action;
+  }
 
-    return await action!.execute(task, workflow);
+  /**
+   * Get the list of all registered actions.
+   * @returns List of registered action names.
+   */
+  public getRegisteredActions(): string[] {
+    return Array.from(this.providers.keys());
   }
 }

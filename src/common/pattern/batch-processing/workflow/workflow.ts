@@ -9,7 +9,7 @@ import {
   validateWorkflowCircularDependency,
   validateWorkflowInitialState,
 } from '@common/pattern/batch-processing/helper/validation.helper';
-import { StaticThis } from '@common/pattern/batch-processing/common/container';
+import ActionContainer from '@common/pattern/batch-processing/common/container';
 
 /**
  * @enum WorkflowState
@@ -104,7 +104,7 @@ export interface WorkflowOptions {
   taskHandlerChain: TaskHandler;
   workflowHandlerChain: WorkflowHandler;
   events?: WorkflowEventEmitter;
-  container?: StaticThis;
+  container?: ActionContainer;
 }
 
 /**
@@ -145,7 +145,7 @@ export class Workflow {
   public workflowHandlerChain: WorkflowHandler;
   /** Workflow EventEmitter instance */
   public events: WorkflowEventEmitter;
-  public container?: StaticThis;
+  public container?: ActionContainer;
 
   public constructor(options: WorkflowOptions) {
     const {

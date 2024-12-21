@@ -1,9 +1,9 @@
-import { CoreActionList } from '@core/actions/action.list';
-import { Action } from '@common/pattern/batch-processing/common/action';
-import MapContainer from '@common/pattern/batch-processing/common/container';
+import ActionContainer from '@common/pattern/batch-processing/common/container';
+import DataProcessingAction from './data-processing';
 
-export class CoreActionContainer extends MapContainer {
-  initialize(): Map<CoreActionList, Action> {
-    return new Map<CoreActionList, Action>();
+export class CoreActionContainer extends ActionContainer {
+  constructor() {
+    super();
+    this.registerAction(DataProcessingAction);
   }
 }

@@ -104,7 +104,8 @@ export interface TaskOptions {
   dependencies?: Workflow[];
   payload?: any;
   events?: TaskEventEmitter;
-  action?: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string;
+  action: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string;
+  undo?: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string;
 }
 
 /**
@@ -139,7 +140,11 @@ export class Task {
   /** The payload of each task */
   public payload?: any;
   /** The task function that accepts task and workflow as parameters */
-  public action?:
+  public action:
+    | ((task: Task, workflow: Workflow) => Promise<TaskResponse>)
+    | string;
+  /** The task function that accepts task and workflow as parameters */
+  public undo?:
     | ((task: Task, workflow: Workflow) => Promise<TaskResponse>)
     | string;
   /** The start time of execution */
@@ -160,6 +165,7 @@ export class Task {
       dependencies,
       payload,
       action,
+      undo,
       events,
     } = options;
 
@@ -174,6 +180,7 @@ export class Task {
     this.payload = payload || {};
     this.events = events || new TaskEventEmitter();
     this.action = action;
+    this.undo = undo;
 
     validateTaskPayload(this.payload, this.name);
     validateTaskCircularDependency(this);

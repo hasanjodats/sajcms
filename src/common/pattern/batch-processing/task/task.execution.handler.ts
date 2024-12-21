@@ -81,9 +81,7 @@ export class TaskExecutionHandler extends TaskHandler {
         workflow: Workflow,
       ) => Promise<TaskResponse>;
     } else {
-      action = workflow.container?.providers.get(
-        task.action as string,
-      )!.execute!;
+      action = workflow.container?.getAction(task.action as string).execute!;
     }
 
     // Wrap task action with timeout and retry
