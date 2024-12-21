@@ -14,7 +14,7 @@ interface DataProcessingActionConfig {
 
 const DataProcessingAction: Action = {
   name: CoreActionList.DataProcessing,
-  configure: (config: any) => {
+  configure: (config: any): void => {
     const dataProcessingConfig = config as DataProcessingActionConfig;
     logger.info(
       'Configuring data processing action with',

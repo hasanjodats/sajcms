@@ -82,6 +82,7 @@ export class PoolProcessor {
           logger.info(
             `Start processing workflow ${workflow.name}(${workflow.id}).`,
           );
+          await workflow.container?.init(); // Initialize container of workflow
           const response = await workflow.workflowHandlerChain.handle(workflow);
           this.workflowStorage.set(workflow.id, workflow); // Update the workflow in storage
         } else {
