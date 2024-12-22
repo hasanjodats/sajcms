@@ -1,8 +1,5 @@
 import { logger } from '@common/logger/winston.logger';
-import {
-  Task,
-  TaskResponseState,
-} from '@common/pattern/batch-processing/task/task';
+import { Task } from '@common/pattern/batch-processing/task/task';
 import { TaskDependencyCheckHandler } from '@common/pattern/batch-processing/task/task.dependency.check.handler';
 import { TaskDependencyExecutionHandler } from '@common/pattern/batch-processing/task/task.dependency.execution.handler';
 import {
@@ -39,44 +36,52 @@ workflowHandlers
 
 const taskEvent: TaskEventEmitter = new TaskEventEmitter();
 taskEvent.on(TaskEvent.Complete, (task, result) => {
+  const _task = task as Task;
   logger.info(
-    `Task ${task.name}(${task.id}) completed with result: ${JSON.stringify(result)}`,
+    `Task ${_task.name}(${_task.id}) completed with result: ${JSON.stringify(result)}`,
   );
 });
 
 taskEvent.on(TaskEvent.Start, (task) => {
-  logger.info(`Task ${task.name}(${task.id}) has started.`);
+  const _task = task as Task;
+  logger.info(`Task ${_task.name}(${_task.id}) has started.`);
 });
 
 taskEvent.on(TaskEvent.Failure, (task, error) => {
-  logger.info(`Task ${task.name}(${task.id}) failed with error:`, error);
+  const _task = task as Task;
+  logger.info(`Task ${_task.name}(${_task.id}) failed with error:`, error);
 });
 
 taskEvent.on(TaskEvent.Progress, (task, progress) => {
-  logger.info(`Task ${task.name}(${task.id}) progress: ${progress}%`);
+  const _task = task as Task;
+  logger.info(`Task ${_task.name}(${_task.id}) progress: ${progress}%`);
 });
 const workflowEvent: WorkflowEventEmitter = new WorkflowEventEmitter();
 
 workflowEvent.on(WorkflowEvent.Complete, (workflow, result) => {
+  const _workflow = workflow as Workflow;
   logger.info(
-    `Workflow ${workflow.name}(${workflow.id}) completed with result: ${JSON.stringify(result)}`,
+    `Workflow ${_workflow.name}(${_workflow.id}) completed with result: ${JSON.stringify(result)}`,
   );
 });
 
 workflowEvent.on(WorkflowEvent.Start, (workflow) => {
-  logger.info(`Workflow ${workflow.name}(${workflow.id}) has started.`);
+  const _workflow = workflow as Workflow;
+  logger.info(`Workflow ${_workflow.name}(${_workflow.id}) has started.`);
 });
 
 workflowEvent.on(WorkflowEvent.Failure, (workflow, error) => {
+  const _workflow = workflow as Workflow;
   logger.error(
-    `Workflow ${workflow.name}(${workflow.id}) failed with error:`,
+    `Workflow ${_workflow.name}(${_workflow.id}) failed with error:`,
     error,
   );
 });
 
 workflowEvent.on(WorkflowEvent.Progress, (workflow, progress) => {
+  const _workflow = workflow as Workflow;
   logger.info(
-    `Workflow ${workflow.name}(${workflow.id}) progress: ${progress}%`,
+    `Workflow ${_workflow.name}(${_workflow.id}) progress: ${progress}%`,
   );
 });
 
@@ -98,35 +103,35 @@ const workflow1 = new Workflow({
   container: new CoreActionContainer(),
 });
 
-const workflow2 = new Workflow({
-  name: 'Workflow2',
-  id: 'W_2',
-  config: { JIT: true },
-  tasks: [
-    new Task({
-      name: 'Task3',
-      id: 'T_3',
-      action: async (task, workflow) => ({
-        state: TaskResponseState.Success,
-        result: 'Task 3 completed.',
-      }),
-      events: taskEvent,
-      dependencies: [workflow1],
-    }),
-    new Task({
-      name: 'Task4',
-      id: 'T_4',
-      action: async (task, workflow) => ({
-        state: TaskResponseState.Success,
-        result: 'Task 4 completed.',
-      }),
-      events: taskEvent,
-    }),
-  ],
-  taskHandlerChain: taskHandlers,
-  workflowHandlerChain: workflowHandlers,
-  events: workflowEvent,
-});
+// const workflow2 = new Workflow({
+//   name: 'Workflow2',
+//   id: 'W_2',
+//   config: { JIT: true },
+//   tasks: [
+//     new Task({
+//       name: 'Task3',
+//       id: 'T_3',
+//       action: async (task, workflow) => ({
+//         state: TaskResponseState.Success,
+//         result: 'Task 3 completed.',
+//       }),
+//       events: taskEvent,
+//       dependencies: [workflow1],
+//     }),
+//     new Task({
+//       name: 'Task4',
+//       id: 'T_4',
+//       action: async (task, workflow) => ({
+//         state: TaskResponseState.Success,
+//         result: 'Task 4 completed.',
+//       }),
+//       events: taskEvent,
+//     }),
+//   ],
+//   taskHandlerChain: taskHandlers,
+//   workflowHandlerChain: workflowHandlers,
+//   events: workflowEvent,
+// });
 
 // تعریف Invoker
 const invoker = new WorkflowInvoker();

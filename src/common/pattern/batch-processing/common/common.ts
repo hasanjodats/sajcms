@@ -1,3 +1,6 @@
+import { Task } from '@common/pattern/batch-processing/task/task';
+import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
+
 /**
  * @interface RetryOption
  * Configuration options for retrying tasks, including maximum attempts, delay between attempts, and timeouts.
@@ -39,7 +42,7 @@ export type RetryOption = {
  * @returns {boolean} - Returns `true` if a circular dependency is detected, otherwise returns `false`.
  */
 export function hasCircularDependency(
-  taskOrWorkflow: any,
+  taskOrWorkflow: Task | Workflow,
   visited = new Set<string>(),
   stack = new Set<string>(),
 ): boolean {

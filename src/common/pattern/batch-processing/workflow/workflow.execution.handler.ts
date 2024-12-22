@@ -62,7 +62,7 @@ export class WorkflowExecutionHandler extends WorkflowHandler {
           );
 
           // Calculate and emit the progress of the workflow
-          let progress = Math.round((index / workflow.tasks.length) * 100);
+          const progress = Math.round((index / workflow.tasks.length) * 100);
           workflow.events.emit(WorkflowEvent.Progress, workflow, progress);
 
           index = index + 1; // Increment the task index
@@ -95,8 +95,9 @@ export class WorkflowExecutionHandler extends WorkflowHandler {
 
       // Pass the workflow to the next handler in the chain
       return super.handle(workflow);
-    } catch (error: any) {
-      const errorMessage = error?.message ?? 'Unknown error';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error?.message : 'Unknown error';
 
       // If an error occurs during execution, create a workflow error and emit the failure event
       const workflowError = new WorkflowError(

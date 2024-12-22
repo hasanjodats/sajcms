@@ -24,7 +24,7 @@ describe('ActionContainer', () => {
       >,
 
       configure: jest.fn().mockImplementation(() => {}) as (
-        config: any,
+        config: unknown,
       ) => Promise<void> | void,
     };
 

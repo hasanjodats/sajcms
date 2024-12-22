@@ -1,32 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="SAJCMS Unit Tests" tests="51" failures="0" errors="0" time="3.351">
-  <testsuite name="Utility Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:35" time="2.927" tests="12">
+<testsuites name="SAJCMS Unit Tests" tests="47" failures="0" errors="0" time="3.535">
+  <testsuite name="Utility Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:33" time="2.895" tests="12">
     <testcase classname="Utility Tests TimeoutError should create a TimeoutError with correct properties" name="Utility Tests TimeoutError should create a TimeoutError with correct properties" time="0.006">
     </testcase>
-    <testcase classname="Utility Tests RetryError should create a RetryError with correct properties" name="Utility Tests RetryError should create a RetryError with correct properties" time="0">
+    <testcase classname="Utility Tests RetryError should create a RetryError with correct properties" name="Utility Tests RetryError should create a RetryError with correct properties" time="0.001">
     </testcase>
     <testcase classname="Utility Tests isTimeoutError should correctly identify TimeoutError" name="Utility Tests isTimeoutError should correctly identify TimeoutError" time="0.001">
     </testcase>
     <testcase classname="Utility Tests isTimeoutError should return false for non-TimeoutError instances" name="Utility Tests isTimeoutError should return false for non-TimeoutError instances" time="0">
     </testcase>
-    <testcase classname="Utility Tests isRetryError should correctly identify RetryError" name="Utility Tests isRetryError should correctly identify RetryError" time="0.001">
+    <testcase classname="Utility Tests isRetryError should correctly identify RetryError" name="Utility Tests isRetryError should correctly identify RetryError" time="0">
     </testcase>
     <testcase classname="Utility Tests isRetryError should return false for non-RetryError instances" name="Utility Tests isRetryError should return false for non-RetryError instances" time="0">
     </testcase>
     <testcase classname="Utility Tests Utility.withTimeout should resolve if the function completes within the timeout" name="Utility Tests Utility.withTimeout should resolve if the function completes within the timeout" time="0.001">
     </testcase>
-    <testcase classname="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" name="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" time="1.001">
+    <testcase classname="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" name="Utility Tests Utility.withTimeout should reject with TimeoutError if the function exceeds the timeout" time="1.002">
     </testcase>
-    <testcase classname="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" name="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" time="0.101">
+    <testcase classname="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" name="Utility Tests Utility.withRetry should resolve if the function succeeds within the allowed attempts" time="0.102">
     </testcase>
     <testcase classname="Utility Tests Utility.withRetry should reject with RetryError after exceeding retry attempts" name="Utility Tests Utility.withRetry should reject with RetryError after exceeding retry attempts" time="0.202">
     </testcase>
-    <testcase classname="Utility Tests Utility.withRetry should use exponential backoff if enabled" name="Utility Tests Utility.withRetry should use exponential backoff if enabled" time="0.602">
+    <testcase classname="Utility Tests Utility.withRetry should use exponential backoff if enabled" name="Utility Tests Utility.withRetry should use exponential backoff if enabled" time="0.601">
     </testcase>
-    <testcase classname="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" name="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" time="0.103">
+    <testcase classname="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" name="Utility Tests Utility.withRetry should invoke onRetry callback on each retry" time="0.102">
     </testcase>
   </testsuite>
-  <testsuite name="WorkflowValidationHandler Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.07" tests="3">
+  <testsuite name="Validation Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:36" time="0.132" tests="6">
+    <testcase classname="Validation Tests should validate workflow initial state (valid)" name="Validation Tests should validate workflow initial state (valid)" time="0">
+    </testcase>
+    <testcase classname="Validation Tests should throw error for invalid workflow initial state" name="Validation Tests should throw error for invalid workflow initial state" time="0.002">
+    </testcase>
+    <testcase classname="Validation Tests should validate task payload (valid)" name="Validation Tests should validate task payload (valid)" time="0.001">
+    </testcase>
+    <testcase classname="Validation Tests should throw error for invalid task payload" name="Validation Tests should throw error for invalid task payload" time="0">
+    </testcase>
+    <testcase classname="Validation Tests should detect circular dependency in workflow" name="Validation Tests should detect circular dependency in workflow" time="0.001">
+    </testcase>
+    <testcase classname="Validation Tests should detect circular dependency in task" name="Validation Tests should detect circular dependency in task" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="hasCircularDependency" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:36" time="0.171" tests="2">
+    <testcase classname="hasCircularDependency should return true for circular dependency" name="hasCircularDependency should return true for circular dependency" time="0">
+    </testcase>
+    <testcase classname="hasCircularDependency should return false for no circular dependency" name="hasCircularDependency should return false for no circular dependency" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ActionContainer" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.064" tests="3">
+    <testcase classname="ActionContainer should register a new action" name="ActionContainer should register a new action" time="0.001">
+    </testcase>
+    <testcase classname="ActionContainer should throw an error if trying to retrieve an unregistered action" name="ActionContainer should throw an error if trying to retrieve an unregistered action" time="0.002">
+    </testcase>
+    <testcase classname="ActionContainer should return a list of registered actions" name="ActionContainer should return a list of registered actions" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Action" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.04" tests="2">
+    <testcase classname="Action should execute the action successfully" name="Action should execute the action successfully" time="0">
+    </testcase>
+    <testcase classname="Action should configure the action if configure method is provided" name="Action should configure the action if configure method is provided" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="WorkflowValidationHandler Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.035" tests="3">
     <testcase classname="WorkflowValidationHandler Tests should pass validation for a valid workflow" name="WorkflowValidationHandler Tests should pass validation for a valid workflow" time="0.003">
     </testcase>
     <testcase classname="WorkflowValidationHandler Tests should fail validation for a workflow with missing id and name" name="WorkflowValidationHandler Tests should fail validation for a workflow with missing id and name" time="0.002">
@@ -34,94 +68,52 @@
     <testcase classname="WorkflowValidationHandler Tests should fail validation for a deferred workflow without a container" name="WorkflowValidationHandler Tests should fail validation for a deferred workflow without a container" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="hasCircularDependency" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.066" tests="2">
-    <testcase classname="hasCircularDependency should return true for circular dependency" name="hasCircularDependency should return true for circular dependency" time="0">
-    </testcase>
-    <testcase classname="hasCircularDependency should return false for no circular dependency" name="hasCircularDependency should return false for no circular dependency" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="ActionContainer" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.038" tests="3">
-    <testcase classname="ActionContainer should register a new action" name="ActionContainer should register a new action" time="0">
-    </testcase>
-    <testcase classname="ActionContainer should throw an error if trying to retrieve an unregistered action" name="ActionContainer should throw an error if trying to retrieve an unregistered action" time="0.002">
-    </testcase>
-    <testcase classname="ActionContainer should return a list of registered actions" name="ActionContainer should return a list of registered actions" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Config Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.034" tests="3">
+  <testsuite name="Config Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.041" tests="3">
     <testcase classname="Config Tests should load config correctly from environment variables" name="Config Tests should load config correctly from environment variables" time="0.001">
     </testcase>
     <testcase classname="Config Tests should throw error if validation fails" name="Config Tests should throw error if validation fails" time="0.003">
     </testcase>
-    <testcase classname="Config Tests should use mock config in test environment" name="Config Tests should use mock config in test environment" time="0">
+    <testcase classname="Config Tests should use mock config in test environment" name="Config Tests should use mock config in test environment" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Action" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.032" tests="2">
-    <testcase classname="Action should execute the action successfully" name="Action should execute the action successfully" time="0">
-    </testcase>
-    <testcase classname="Action should configure the action if configure method is provided" name="Action should configure the action if configure method is provided" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="TaskError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.025" tests="4">
+  <testsuite name="TaskError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.03" tests="4">
     <testcase classname="TaskError Class should create a TaskError with correct message and properties" name="TaskError Class should create a TaskError with correct message and properties" time="0.002">
     </testcase>
     <testcase classname="TaskError Class should include the error code if provided" name="TaskError Class should include the error code if provided" time="0.001">
     </testcase>
-    <testcase classname="TaskError Class should include cause if provided" name="TaskError Class should include cause if provided" time="0">
+    <testcase classname="TaskError Class should include cause if provided" name="TaskError Class should include cause if provided" time="0.001">
     </testcase>
     <testcase classname="TaskError Class should include timestamp in the error message" name="TaskError Class should include timestamp in the error message" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="WorkflowError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.018" tests="4">
+  <testsuite name="WorkflowError Class" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.027" tests="4">
     <testcase classname="WorkflowError Class should create a WorkflowError with correct message and properties" name="WorkflowError Class should create a WorkflowError with correct message and properties" time="0.002">
     </testcase>
-    <testcase classname="WorkflowError Class should include the cause if provided" name="WorkflowError Class should include the cause if provided" time="0.001">
+    <testcase classname="WorkflowError Class should include the cause if provided" name="WorkflowError Class should include the cause if provided" time="0">
     </testcase>
-    <testcase classname="WorkflowError Class should include the error code if provided" name="WorkflowError Class should include the error code if provided" time="0">
+    <testcase classname="WorkflowError Class should include the error code if provided" name="WorkflowError Class should include the error code if provided" time="0.001">
     </testcase>
     <testcase classname="WorkflowError Class should include the correct timestamp if provided" name="WorkflowError Class should include the correct timestamp if provided" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="GeneralError" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.02" tests="6">
-    <testcase classname="GeneralError should create a GeneralError instance with default values" name="GeneralError should create a GeneralError instance with default values" time="0.001">
+  <testsuite name="Logger Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.017" tests="2">
+    <testcase classname="Logger Tests should create a logger instance" name="Logger Tests should create a logger instance" time="0">
     </testcase>
-    <testcase classname="GeneralError should create a GeneralError instance with custom values" name="GeneralError should create a GeneralError instance with custom values" time="0">
+    <testcase classname="Logger Tests should log info messages" name="Logger Tests should log info messages" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="GeneralError" errors="0" failures="0" skipped="0" timestamp="2024-12-22T12:04:37" time="0.016" tests="6">
+    <testcase classname="GeneralError should create a GeneralError instance with default values" name="GeneralError should create a GeneralError instance with default values" time="0.002">
+    </testcase>
+    <testcase classname="GeneralError should create a GeneralError instance with custom values" name="GeneralError should create a GeneralError instance with custom values" time="0.001">
     </testcase>
     <testcase classname="GeneralError should return a detailed string representation" name="GeneralError should return a detailed string representation" time="0">
     </testcase>
-    <testcase classname="GeneralError should handle non-object causes in the string representation" name="GeneralError should handle non-object causes in the string representation" time="0.001">
+    <testcase classname="GeneralError should handle non-object causes in the string representation" name="GeneralError should handle non-object causes in the string representation" time="0">
     </testcase>
-    <testcase classname="GeneralError should identify an error as GeneralError" name="GeneralError should identify an error as GeneralError" time="0">
+    <testcase classname="GeneralError should identify an error as GeneralError" name="GeneralError should identify an error as GeneralError" time="0.001">
     </testcase>
     <testcase classname="GeneralError should work with stack trace" name="GeneralError should work with stack trace" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Validation Functions" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.025" tests="10">
-    <testcase classname="Validation Functions validateWorkflowInitialState should throw error for non-object initialState" name="Validation Functions validateWorkflowInitialState should throw error for non-object initialState" time="0.007">
-    </testcase>
-    <testcase classname="Validation Functions validateWorkflowInitialState should not throw error for valid object initialState" name="Validation Functions validateWorkflowInitialState should not throw error for valid object initialState" time="0">
-    </testcase>
-    <testcase classname="Validation Functions validateTaskPayload should throw error for non-object payload" name="Validation Functions validateTaskPayload should throw error for non-object payload" time="0.001">
-    </testcase>
-    <testcase classname="Validation Functions validateTaskPayload should not throw error for valid object payload" name="Validation Functions validateTaskPayload should not throw error for valid object payload" time="0">
-    </testcase>
-    <testcase classname="Validation Functions validateCircularDependency should throw error if hasCircularDependency returns true (workflow)" name="Validation Functions validateCircularDependency should throw error if hasCircularDependency returns true (workflow)" time="0.001">
-    </testcase>
-    <testcase classname="Validation Functions validateCircularDependency should not throw error if hasCircularDependency returns false (workflow)" name="Validation Functions validateCircularDependency should not throw error if hasCircularDependency returns false (workflow)" time="0">
-    </testcase>
-    <testcase classname="Validation Functions validateCircularDependency should throw error if hasCircularDependency returns true (task)" name="Validation Functions validateCircularDependency should throw error if hasCircularDependency returns true (task)" time="0.001">
-    </testcase>
-    <testcase classname="Validation Functions validateCircularDependency should not throw error if hasCircularDependency returns false (task)" name="Validation Functions validateCircularDependency should not throw error if hasCircularDependency returns false (task)" time="0">
-    </testcase>
-    <testcase classname="Validation Functions validateWorkflowCircularDependency should call hasCircularDependency with correct arguments (workflow)" name="Validation Functions validateWorkflowCircularDependency should call hasCircularDependency with correct arguments (workflow)" time="0">
-    </testcase>
-    <testcase classname="Validation Functions validateTaskCircularDependency should call hasCircularDependency with correct arguments (task)" name="Validation Functions validateTaskCircularDependency should call hasCircularDependency with correct arguments (task)" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Logger Tests" errors="0" failures="0" skipped="0" timestamp="2024-12-22T09:17:38" time="0.021" tests="2">
-    <testcase classname="Logger Tests should create a logger instance" name="Logger Tests should create a logger instance" time="0">
-    </testcase>
-    <testcase classname="Logger Tests should log info messages" name="Logger Tests should log info messages" time="0.001">
     </testcase>
   </testsuite>
 </testsuites>

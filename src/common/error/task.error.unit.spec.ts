@@ -64,7 +64,6 @@ describe('TaskError Class', () => {
 
     // Act
     const taskError = new TaskError(mockTask, errorType, message);
-    const timestamp = new Date().toISOString();
 
     // Assert
     expect(taskError.message).toContain('Timestamp');

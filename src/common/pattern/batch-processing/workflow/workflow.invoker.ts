@@ -1,3 +1,4 @@
+import { GeneralError } from '@common/error/general.error';
 import { logger } from '@common/logger/winston.logger';
 import {
   Workflow,
@@ -55,8 +56,9 @@ export class WorkflowInvoker {
           state: WorkflowResponseState.Success,
         };
       }
-    } catch (error: any) {
-      const errorMessage = error?.message ?? 'Unknown error';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error?.message : 'Unknown error';
       // Log an error if an exception occurs during workflow execution
       logger.error(
         `Error occurred while running workflow ${workflow.name}(${workflow.id}).`,
@@ -66,7 +68,10 @@ export class WorkflowInvoker {
       // Return a failure response with the error details
       return {
         state: WorkflowResponseState.Failure,
-        error,
+        error:
+          error instanceof Error
+            ? error
+            : new GeneralError('UnknownError', errorMessage),
       };
     }
   }
@@ -78,7 +83,8 @@ export class WorkflowInvoker {
    * @param {Workflow} workflow - The workflow to cancel.
    * @returns {Promise<void>} - A promise indicating the completion of the cancellation process.
    */
-  public async cancel(workflow: Workflow): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async cancel(_workflow: Workflow): Promise<void> {
     // Placeholder for future cancellation logic
   }
 }

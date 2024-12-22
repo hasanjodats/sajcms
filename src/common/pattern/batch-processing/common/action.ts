@@ -36,5 +36,5 @@ export interface Action {
    *
    * @param config - The configuration settings to apply to the action.
    */
-  configure?: (config: any) => Promise<void> | void;
+  configure?: (config: unknown) => Promise<void> | void;
 }

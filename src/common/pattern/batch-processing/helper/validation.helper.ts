@@ -1,6 +1,8 @@
 import { logger } from '@common/logger/winston.logger';
 import { hasCircularDependency } from '@common/pattern/batch-processing/common/common';
 import { GeneralError } from '@common/error/general.error'; // Import your custom error
+import { Task } from '@common/pattern/batch-processing/task/task';
+import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
 
 /**
  * Validates if the provided instance (workflow or task) has any circular dependencies.
@@ -13,7 +15,7 @@ import { GeneralError } from '@common/error/general.error'; // Import your custo
  * @throws {GeneralError} Throws a custom error if a circular dependency is detected.
  */
 const validateCircularDependency = (
-  instance: any,
+  instance: Task | Workflow,
   type: 'workflow' | 'task',
 ) => {
   if (hasCircularDependency(instance)) {
@@ -34,10 +36,10 @@ const validateCircularDependency = (
  * @throws {GeneralError} Throws a custom error if the initial state is not an object.
  */
 export const validateWorkflowInitialState = (
-  initialState: any,
+  initialState: unknown,
   name: string,
 ) => {
-  if (typeof initialState !== 'object') {
+  if (initialState !== null && typeof initialState !== 'object') {
     const message = `InitialState for workflow ${name} must be an object.`;
     logger.error(message); // Log the validation error
     throw new GeneralError('InvalidInitialState', message); // Throw custom error
@@ -54,7 +56,7 @@ export const validateWorkflowInitialState = (
  * @param instance - The workflow instance to check for circular dependencies.
  * @throws {GeneralError} Throws a custom error if a circular dependency is detected.
  */
-export const validateWorkflowCircularDependency = (instance: any) => {
+export const validateWorkflowCircularDependency = (instance: Workflow) => {
   validateCircularDependency(instance, 'workflow'); // Call the generic circular dependency check for workflows
 };
 
@@ -68,8 +70,8 @@ export const validateWorkflowCircularDependency = (instance: any) => {
  * @param name - The name of the task for more informative error messages.
  * @throws {GeneralError} Throws a custom error if the payload is not an object.
  */
-export const validateTaskPayload = (payload: any, name: string) => {
-  if (typeof payload !== 'object') {
+export const validateTaskPayload = (payload: unknown, name: string) => {
+  if (payload !== null && typeof payload !== 'object') {
     const message = `Payload for task ${name} must be an object.`;
     logger.error(message); // Log the validation error
     throw new GeneralError('InvalidTaskPayload', message); // Throw custom error
@@ -86,6 +88,6 @@ export const validateTaskPayload = (payload: any, name: string) => {
  * @param instance - The task instance to check for circular dependencies.
  * @throws {GeneralError} Throws a custom error if a circular dependency is detected.
  */
-export const validateTaskCircularDependency = (instance: any) => {
+export const validateTaskCircularDependency = (instance: Task) => {
   validateCircularDependency(instance, 'task'); // Call the generic circular dependency check for tasks
 };

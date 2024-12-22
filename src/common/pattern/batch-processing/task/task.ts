@@ -1,4 +1,4 @@
-import _, { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash';
 import { GeneralError } from '@common/error/general.error';
 import { Workflow } from '@common/pattern/batch-processing/workflow/workflow';
 import { RetryOption } from '@common/pattern/batch-processing/common/common';
@@ -66,7 +66,7 @@ export type TaskMetadata = {
     name: string; // Name of the requester
     address: string; // Address or endpoint of the requester
   };
-  additionalInfo?: { [key: string]: any }; // Any other additional information about the task
+  additionalInfo?: { [key: string]: unknown }; // Any other additional information about the task
 };
 
 /**
@@ -85,7 +85,7 @@ export const DEFAULT_TASK_METADATA: TaskMetadata = {
  */
 export type TaskResponse = {
   state: TaskResponseState; // The state of the task response (e.g., success, failure)
-  result?: any; // The result of the task execution (if any)
+  result?: unknown; // The result of the task execution (if any)
   error?: GeneralError; // Error object if the task failed
 };
 
@@ -101,7 +101,7 @@ export interface TaskOptions {
   config?: TaskConfig; // Configuration settings for the task
   meta?: TaskMetadata; // Metadata associated with the task
   dependencies?: Workflow[]; // Workflows that must complete before this task
-  payload?: any; // The data to be processed by the task
+  payload?: unknown; // The data to be processed by the task
   events?: TaskEventEmitter; // EventEmitter instance to handle task events
   action: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string; // The action to execute for the task
   undo?: ((task: Task, workflow: Workflow) => Promise<TaskResponse>) | string; // Optional undo action for the task
@@ -120,7 +120,7 @@ export class Task {
   public config?: TaskConfig; // The task's configuration settings
   public meta?: TaskMetadata; // The task's metadata
   public dependencies?: Workflow[]; // List of workflows that must execute before this task
-  public payload?: any; // The payload or data associated with the task
+  public payload?: unknown; // The payload or data associated with the task
   public action:
     | ((task: Task, workflow: Workflow) => Promise<TaskResponse>)
     | string; // The action function or string to execute the task

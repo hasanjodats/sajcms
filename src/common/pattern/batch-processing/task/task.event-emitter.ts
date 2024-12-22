@@ -28,7 +28,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param args - The arguments to pass with the event.
    * @returns boolean - Returns true if the event was successfully emitted.
    */
-  emit(event: TaskEvent.Start, ...args: any[]): boolean;
+  emit(event: TaskEvent.Start, ...args: unknown[]): boolean;
 
   /**
    * Emits an event indicating the progress of the task.
@@ -37,7 +37,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param args - The arguments to pass with the event.
    * @returns boolean - Returns true if the event was successfully emitted.
    */
-  emit(event: TaskEvent.Progress, ...args: any[]): boolean;
+  emit(event: TaskEvent.Progress, ...args: unknown[]): boolean;
 
   /**
    * Emits an event indicating a failure in the task.
@@ -46,7 +46,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param args - The arguments to pass with the event.
    * @returns boolean - Returns true if the event was successfully emitted.
    */
-  emit(event: TaskEvent.Failure, ...args: any[]): boolean;
+  emit(event: TaskEvent.Failure, ...args: unknown[]): boolean;
 
   /**
    * Emits an event indicating the completion of the task.
@@ -55,7 +55,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param args - The arguments to pass with the event.
    * @returns boolean - Returns true if the event was successfully emitted.
    */
-  emit(event: TaskEvent.Complete, ...args: any[]): boolean;
+  emit(event: TaskEvent.Complete, ...args: unknown[]): boolean;
 
   /**
    * Emits a generic event. This is the underlying implementation that is called by the other emit methods.
@@ -64,7 +64,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param args - The arguments to pass with the event.
    * @returns boolean - Returns true if the event was successfully emitted.
    */
-  emit(event: string | symbol, ...args: any[]): boolean {
+  emit(event: string | symbol, ...args: unknown[]): boolean {
     return super.emit(event, ...args);
   }
 
@@ -76,10 +76,10 @@ export class TaskEventEmitter extends EventEmitter {
    * @param listener - The function to call when the event is emitted.
    * @returns this - The current instance of TaskEventEmitter for method chaining.
    */
-  on(event: TaskEvent.Start, listener: (...args: any[]) => void): this;
-  on(event: TaskEvent.Progress, listener: (...args: any[]) => void): this;
-  on(event: TaskEvent.Failure, listener: (...args: any[]) => void): this;
-  on(event: TaskEvent.Complete, listener: (...args: any[]) => void): this;
+  on(event: TaskEvent.Start, listener: (...args: unknown[]) => void): this;
+  on(event: TaskEvent.Progress, listener: (...args: unknown[]) => void): this;
+  on(event: TaskEvent.Failure, listener: (...args: unknown[]) => void): this;
+  on(event: TaskEvent.Complete, listener: (...args: unknown[]) => void): this;
   /**
    * Registers a listener for a generic event. This method is called by the other `on` and `once` methods
    * for more specific event types.
@@ -88,7 +88,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param listener - The function to call when the event is emitted.
    * @returns this - The current instance of TaskEventEmitter for method chaining.
    */
-  on(event: string | symbol, listener: (...args: any[]) => void): this {
+  on(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.on(event, listener);
   }
 
@@ -100,10 +100,10 @@ export class TaskEventEmitter extends EventEmitter {
    * @param listener - The function to call when the event is emitted.
    * @returns this - The current instance of TaskEventEmitter for method chaining.
    */
-  once(event: TaskEvent.Start, listener: (...args: any[]) => void): this;
-  once(event: TaskEvent.Progress, listener: (...args: any[]) => void): this;
-  once(event: TaskEvent.Failure, listener: (...args: any[]) => void): this;
-  once(event: TaskEvent.Complete, listener: (...args: any[]) => void): this;
+  once(event: TaskEvent.Start, listener: (...args: unknown[]) => void): this;
+  once(event: TaskEvent.Progress, listener: (...args: unknown[]) => void): this;
+  once(event: TaskEvent.Failure, listener: (...args: unknown[]) => void): this;
+  once(event: TaskEvent.Complete, listener: (...args: unknown[]) => void): this;
   /**
    * Registers a listener for a generic event that will only be triggered once.
    * This method is called by the other `once` methods for more specific event types.
@@ -112,7 +112,7 @@ export class TaskEventEmitter extends EventEmitter {
    * @param listener - The function to call when the event is emitted.
    * @returns this - The current instance of TaskEventEmitter for method chaining.
    */
-  once(event: string | symbol, listener: (...args: any[]) => void): this {
+  once(event: string | symbol, listener: (...args: unknown[]) => void): this {
     return super.once(event, listener);
   }
 }

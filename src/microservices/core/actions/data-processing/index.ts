@@ -14,14 +14,15 @@ interface DataProcessingActionConfig {
 
 const DataProcessingAction: Action = {
   name: CoreActionList.DataProcessing,
-  configure: (config: any): void => {
+  configure: (config: unknown): void => {
     const dataProcessingConfig = config as DataProcessingActionConfig;
     logger.info(
       'Configuring data processing action with',
       dataProcessingConfig,
     );
   },
-  execute: async (task: Task, workflow: Workflow): Promise<TaskResponse> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  execute: async (task: Task, _workflow: Workflow): Promise<TaskResponse> => {
     if (task.config?.execution?.state?.progress === 10) {
       return {
         state: TaskResponseState.Success,

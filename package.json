@@ -24,7 +24,9 @@
     "glup": "./node_modules/gulp/bin/gulp.js ${npm_config_task}",
     "docs:clean": "rimraf documentation/source-docs",
     "docs:generate": "./node_modules/typedoc/bin/typedoc",
-    "docs": "npm run docs:clean && npm run docs:generate"
+    "docs": "npm run docs:clean && npm run docs:generate",
+    "eslint": "eslint",
+    "deadcode": "ts-prune"
   },
   "keywords": [],
   "author": "",
@@ -41,8 +43,12 @@
     "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
     "concurrently": "^9.1.0",
     "eslint": "^9.17.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^15.14.0",
     "gulp": "^5.0.0",
     "husky": "^9.1.7",
     "inquirer": "^12.2.0",
@@ -57,7 +63,8 @@
     "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
   },
   "dependencies": {
     "amqplib": "^0.10.5",
@@ -74,6 +81,7 @@
     "pg": "^8.13.1",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
+    "ts-prune": "^0.10.3",
     "tsconfig-paths": "^4.2.0",
     "typeorm": "^0.3.20",
     "uuid": "^11.0.3",

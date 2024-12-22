@@ -24,13 +24,11 @@ const common = {
   ignore_watch: ['node_modules', 'src/**/*.spec.ts'],
 };
 
-module.exports = {
-  apps: [
-    {
-      ...common,
-      name: 'index',
-      script: 'src/microservices/core/index.ts',
-      watch: ['src/microservices/core', 'src/common'],
-    },
-  ],
-};
+export const apps = [
+  {
+    ...common,
+    name: 'index',
+    script: 'src/microservices/core/index.ts',
+    watch: ['src/microservices/core', 'src/common'],
+  },
+];

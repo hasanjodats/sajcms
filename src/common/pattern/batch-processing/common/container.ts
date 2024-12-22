@@ -1,4 +1,5 @@
 import { GeneralError } from '@common/error/general.error';
+import { logger } from '@common/logger/winston.logger';
 import { Action } from '@common/pattern/batch-processing/common/action';
 
 /**
@@ -24,7 +25,7 @@ export default abstract class ActionContainer {
    *
    * @throws {GeneralError} If the action name already exists in the container.
    */
-  public async registerAction(action: Action, config?: any): Promise<void> {
+  public async registerAction(action: Action, config?: unknown): Promise<void> {
     if (!this.providers.has(action.name)) {
       // Add action to providers map
       this.providers.set(action.name, action);
@@ -33,6 +34,7 @@ export default abstract class ActionContainer {
       if (action.configure) {
         await action.configure(config);
       }
+      logger.info(`${action.name} action registered successfully.`);
     }
   }
 

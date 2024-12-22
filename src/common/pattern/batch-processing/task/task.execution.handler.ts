@@ -29,7 +29,9 @@ export class TaskExecutionHandler extends TaskHandler {
    */
   public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
     task.events.emit(TaskEvent.Start, task); // Emit task start event
-    logger.info(`Task ${task.name}(${task.id}) has started execution.`);
+    logger.info(
+      `Executing task ${task.name}(${task.id}) with payload: ${JSON.stringify(task.payload)}`,
+    );
     task.startTime = Date.now(); // Capture the start time of the task
 
     try {
@@ -54,8 +56,9 @@ export class TaskExecutionHandler extends TaskHandler {
 
       logger.info(`Task ${task.name}(${task.id}) has executed successfully.`);
       return response;
-    } catch (error: any) {
-      const errorMessage = error?.message ?? 'Unknown error';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error?.message : 'Unknown error';
       // Handling execution failure
       const taskError = new TaskError(
         task,
@@ -102,7 +105,10 @@ export class TaskExecutionHandler extends TaskHandler {
       ) => Promise<TaskResponse>;
     } else {
       // Otherwise, fetch the action from the container
-      action = workflow.container?.getAction(task.action as string).execute!;
+      action = workflow.container?.getAction(task.action as string).execute as (
+        task: Task,
+        workflow: Workflow,
+      ) => Promise<TaskResponse>;
     }
 
     // Wrap task action with timeout and retry
@@ -118,8 +124,9 @@ export class TaskExecutionHandler extends TaskHandler {
 
     try {
       return await taskWithRetry(); // Execute the task with retry and timeout
-    } catch (error: any) {
-      const errorMessage = error?.message ?? 'Unknown error';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error?.message : 'Unknown error';
       // Log and return error if task execution fails
       logger.error(
         `Error executing task ${task.name}(${task.id}):`,
@@ -127,7 +134,7 @@ export class TaskExecutionHandler extends TaskHandler {
       );
       return {
         state: TaskResponseState.Failure,
-        error: new TaskError(task, errorMessage, error),
+        error: new TaskError(task, TaskErrorType.ExecutionFailed, errorMessage),
       };
     }
   }

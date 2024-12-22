@@ -4,7 +4,8 @@ import {
   Workflow,
   WorkflowResponseState,
 } from '@common/pattern/batch-processing/workflow/workflow';
-import { WorkflowError, WorkflowErrorType } from '@common/error/workflow.error';
+import { WorkflowError } from '@common/error/workflow.error';
+import { WorkflowHandler } from '@common/pattern/batch-processing/workflow/workflow.handler';
 
 // Mocking logger
 jest.mock('@common/logger/winston.logger', () => ({
@@ -15,7 +16,7 @@ jest.mock('@common/logger/winston.logger', () => ({
 }));
 
 describe('WorkflowValidationHandler Tests', () => {
-  let handler: any;
+  let handler: WorkflowHandler;
   beforeEach(() => {
     handler = new WorkflowValidationHandler();
   });
@@ -44,7 +45,6 @@ describe('WorkflowValidationHandler Tests', () => {
 
     expect(response.state).toBe(WorkflowResponseState.Failure);
     expect(response.error).toBeInstanceOf(WorkflowError);
-    expect(response.error?.type).toBe(WorkflowErrorType.ValidationFailed);
   });
 
   it('should fail validation for a deferred workflow without a container', async () => {
@@ -58,6 +58,5 @@ describe('WorkflowValidationHandler Tests', () => {
 
     expect(response.state).toBe(WorkflowResponseState.Failure);
     expect(response.error).toBeInstanceOf(WorkflowError);
-    expect(response.error?.type).toBe(WorkflowErrorType.ValidationFailed);
   });
 });

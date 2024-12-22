@@ -60,13 +60,14 @@ export class WorkflowDependencyExecutionHandler extends WorkflowHandler {
         `Workflow ${workflow.name}(${workflow.id}) has executed all dependencies successfully.`,
       );
       return super.handle(workflow);
-    } catch (error: any) {
-      const errorMessage = error?.message ?? 'Unknown error';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error?.message : 'Unknown error';
       // If an error occurs while executing dependencies, log the error and return a failure response
       const workflowError = new WorkflowError(
         workflow,
         WorkflowErrorType.WorkflowFailed,
-        `Workflow ${workflow.name}(${workflow.id}) dependencies execution has failed: ${error.message}`,
+        `Workflow ${workflow.name}(${workflow.id}) dependencies execution has failed: ${errorMessage}`,
         errorMessage,
       );
       logger.error(
@@ -85,14 +86,16 @@ export class WorkflowDependencyExecutionHandler extends WorkflowHandler {
    * This method processes the response and determines whether the workflow can continue or needs to stop.
    *
    * @param {WorkflowResponse} response - The response object from executing a dependency.
-   * @param {Workflow} workflow - The workflow being executed.
+   * @param {Workflow} _workflow - The workflow being executed.
    * @param {Workflow} dependency - The current dependency being executed.
    * @returns {WorkflowResponse | null} - The response to be returned, or null if the process should continue.
    */
   private handleDependencyResponse(
     response: WorkflowResponse,
-    workflow: Workflow,
-    dependency: Workflow,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _workflow: Workflow,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _dependency: Workflow,
   ): WorkflowResponse | null {
     // If the response is "Pending", return a pending response and stop further execution
     if (response.state === WorkflowResponseState.Pending) {

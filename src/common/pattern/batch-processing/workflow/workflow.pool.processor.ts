@@ -57,7 +57,7 @@ export class PoolProcessor {
     logger.info('Starting cleanup of completed workflows in the pool.');
 
     // Iterate over the workflow storage and remove completed workflows
-    for (let [id, workflow] of this.workflowStorage) {
+    for (const [id, workflow] of this.workflowStorage) {
       if (workflow.state === WorkflowState.Completed) {
         logger.info(
           `Workflow ${workflow.name}(${workflow.id}) is completed and removed from pool storage.`,
@@ -81,7 +81,7 @@ export class PoolProcessor {
     let inProgressWorkflows = 0;
 
     // Iterate over workflows in the pool storage
-    for (let [_, workflow] of this.workflowStorage) {
+    for (const [_, workflow] of this.workflowStorage) {
       try {
         // Process workflows that are not yet completed
         if (workflow.state !== WorkflowState.Completed) {
@@ -92,7 +92,7 @@ export class PoolProcessor {
 
           // Initialize the workflow container and execute the workflow handler chain
           await workflow.container?.init();
-          const response = await workflow.workflowHandlerChain.handle(workflow);
+          await workflow.workflowHandlerChain.handle(workflow);
 
           // Update the workflow in storage with the response
           this.workflowStorage.set(workflow.id, workflow);
@@ -102,11 +102,12 @@ export class PoolProcessor {
             `Workflow ${workflow.name}(${workflow.id}) has already completed.`,
           );
         }
-      } catch (error: any) {
-        const errorMessage = error?.message ?? 'Unknown error';
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error?.message : 'Unknown error';
         // Log an error if workflow processing fails
         logger.error(
-          `Error occurred during processing workflow ${workflow.name}(${workflow.id}): ${error.message}`,
+          `Error occurred during processing workflow ${workflow.name}(${workflow.id}): ${errorMessage}`,
           errorMessage,
         );
       }
@@ -141,11 +142,12 @@ export class PoolProcessor {
           logger.info('No workflows left in the queue. Stopping heartbeat.');
           clearInterval(interval); // Stop the interval when all workflows are processed
         }
-      } catch (error: any) {
-        const errorMessage = error?.message ?? 'Unknown error';
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error?.message : 'Unknown error';
         // Log any errors that occur during the heartbeat execution
         logger.error(
-          `Error occurred during heartbeat execution: ${error.message}`,
+          `Error occurred during heartbeat execution: ${errorMessage}`,
           errorMessage,
         );
       }

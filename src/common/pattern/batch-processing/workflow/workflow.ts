@@ -58,7 +58,7 @@ export type WorkflowMetadata = {
     name: string;
     address: string;
   };
-  additionalInfo?: { [key: string]: any };
+  additionalInfo?: { [key: string]: unknown };
 };
 
 export const DEFAULT_WORKFLOW_METADATA: WorkflowMetadata = {
@@ -74,7 +74,7 @@ export const DEFAULT_WORKFLOW_METADATA: WorkflowMetadata = {
  */
 export type WorkflowResponse = {
   state: WorkflowResponseState;
-  result?: any;
+  result?: unknown;
   error?: GeneralError;
 };
 
@@ -85,7 +85,7 @@ export type WorkflowResponse = {
 export interface WorkflowOptions {
   id?: string;
   name?: string;
-  initialState?: any;
+  initialState?: unknown;
   state?: WorkflowState;
   config?: WorkflowConfig;
   meta?: WorkflowMetadata;
@@ -104,7 +104,7 @@ export interface WorkflowOptions {
 export class Workflow {
   public id: string;
   public name: string;
-  public initialState?: any;
+  public initialState?: unknown;
   public state: WorkflowState;
   public config?: WorkflowConfig;
   public meta?: WorkflowMetadata;
