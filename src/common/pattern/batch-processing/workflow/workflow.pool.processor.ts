@@ -103,10 +103,11 @@ export class PoolProcessor {
           );
         }
       } catch (error: any) {
+        const errorMessage = error?.message ?? 'Unknown error';
         // Log an error if workflow processing fails
         logger.error(
           `Error occurred during processing workflow ${workflow.name}(${workflow.id}): ${error.message}`,
-          error,
+          errorMessage,
         );
       }
     }
@@ -141,10 +142,11 @@ export class PoolProcessor {
           clearInterval(interval); // Stop the interval when all workflows are processed
         }
       } catch (error: any) {
+        const errorMessage = error?.message ?? 'Unknown error';
         // Log any errors that occur during the heartbeat execution
         logger.error(
           `Error occurred during heartbeat execution: ${error.message}`,
-          error,
+          errorMessage,
         );
       }
     }, intervalMs); // Periodic interval in milliseconds (e.g., 5000 for 5 seconds)

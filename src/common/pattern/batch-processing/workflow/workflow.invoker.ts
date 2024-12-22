@@ -56,10 +56,11 @@ export class WorkflowInvoker {
         };
       }
     } catch (error: any) {
+      const errorMessage = error?.message ?? 'Unknown error';
       // Log an error if an exception occurs during workflow execution
       logger.error(
         `Error occurred while running workflow ${workflow.name}(${workflow.id}).`,
-        error,
+        errorMessage,
       );
 
       // Return a failure response with the error details

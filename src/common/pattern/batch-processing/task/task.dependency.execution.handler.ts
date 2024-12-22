@@ -71,16 +71,17 @@ export class TaskDependencyExecutionHandler extends TaskHandler {
       );
       return super.handle(task, workflow); // Proceed to the next handler in the chain
     } catch (error: any) {
+      const errorMessage = error?.message ?? 'Unknown error';
       // Handle any errors that occurred during dependency execution
       const taskError = new TaskError(
         task,
         TaskErrorType.DependencyExecutionFailed,
         `Task ${task.name}(${task.id}) dependency execution failed: ${error.message}`,
-        error,
+        errorMessage,
       );
       logger.error(
         `Task ${task.name}(${task.id}) dependency execution failed:`,
-        error,
+        errorMessage,
       );
 
       // Return failure response with error details

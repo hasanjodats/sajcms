@@ -55,17 +55,18 @@ export class TaskExecutionHandler extends TaskHandler {
       logger.info(`Task ${task.name}(${task.id}) has executed successfully.`);
       return response;
     } catch (error: any) {
+      const errorMessage = error?.message ?? 'Unknown error';
       // Handling execution failure
       const taskError = new TaskError(
         task,
         TaskErrorType.ExecutionFailed,
-        error,
+        errorMessage,
       );
       task.events.emit(TaskEvent.Failure, task, taskError); // Emit failure event
 
       logger.error(
         `Task ${task.name}(${task.id}) execution has failed.`,
-        error,
+        errorMessage,
       );
       return {
         state: TaskResponseState.Failure,
@@ -118,11 +119,15 @@ export class TaskExecutionHandler extends TaskHandler {
     try {
       return await taskWithRetry(); // Execute the task with retry and timeout
     } catch (error: any) {
+      const errorMessage = error?.message ?? 'Unknown error';
       // Log and return error if task execution fails
-      logger.error(`Error executing task ${task.name}(${task.id}):`, error);
+      logger.error(
+        `Error executing task ${task.name}(${task.id}):`,
+        errorMessage,
+      );
       return {
         state: TaskResponseState.Failure,
-        error: new TaskError(task, error.message, error),
+        error: new TaskError(task, errorMessage, error),
       };
     }
   }

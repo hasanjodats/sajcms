@@ -61,16 +61,17 @@ export class WorkflowDependencyExecutionHandler extends WorkflowHandler {
       );
       return super.handle(workflow);
     } catch (error: any) {
+      const errorMessage = error?.message ?? 'Unknown error';
       // If an error occurs while executing dependencies, log the error and return a failure response
       const workflowError = new WorkflowError(
         workflow,
         WorkflowErrorType.WorkflowFailed,
         `Workflow ${workflow.name}(${workflow.id}) dependencies execution has failed: ${error.message}`,
-        error,
+        errorMessage,
       );
       logger.error(
         `Workflow ${workflow.name}(${workflow.id}) dependencies execution failed:`,
-        error,
+        errorMessage,
       );
       return {
         state: WorkflowResponseState.Failure,
