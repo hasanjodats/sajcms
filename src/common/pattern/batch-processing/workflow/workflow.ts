@@ -35,7 +35,7 @@ export enum WorkflowResponseState {
  * @interface WorkflowConfig
  * Configuration for workflows, including retry options and a JIT (Just-In-Time) option.
  */
-export type WorkflowConfig = {
+type WorkflowConfig = {
   JIT: boolean;
   execution?: {
     state: {
@@ -44,7 +44,7 @@ export type WorkflowConfig = {
   };
 };
 
-export const DEFAULT_WORKFLOW_CONFIG: WorkflowConfig = {
+const DEFAULT_WORKFLOW_CONFIG: WorkflowConfig = {
   JIT: true,
   execution: { state: { progress: 0 } },
 };
@@ -53,7 +53,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowConfig = {
  * @interface WorkflowMetadata
  * Contains extra information about workflows.
  */
-export type WorkflowMetadata = {
+type WorkflowMetadata = {
   caller?: {
     name: string;
     address: string;
@@ -61,7 +61,7 @@ export type WorkflowMetadata = {
   additionalInfo?: { [key: string]: unknown };
 };
 
-export const DEFAULT_WORKFLOW_METADATA: WorkflowMetadata = {
+const DEFAULT_WORKFLOW_METADATA: WorkflowMetadata = {
   caller: {
     name: 'Unknown',
     address: 'Unknown',
@@ -82,7 +82,7 @@ export type WorkflowResponse = {
  * @interface WorkflowOptions
  * Represents the workflow options.
  */
-export interface WorkflowOptions {
+interface WorkflowOptions {
   id?: string;
   name?: string;
   initialState?: unknown;

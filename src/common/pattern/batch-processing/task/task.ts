@@ -33,7 +33,7 @@ export enum TaskResponseState {
  * @interface TaskConfig
  * Represents the configuration settings for a task, including retry options and execution details.
  */
-export type TaskConfig = {
+type TaskConfig = {
   /** Retry options for handling task retries in case of failure */
   retry?: RetryOption;
   /** Execution details for the task, including progress and last execution time */
@@ -51,7 +51,7 @@ export type TaskConfig = {
 /**
  * Default configuration settings for a task.
  */
-export const DEFAULT_TASK_CONFIG: TaskConfig = {
+const DEFAULT_TASK_CONFIG: TaskConfig = {
   retry: { maximumAttempts: 1, attemptDelay: 1000, timeout: Infinity },
   execution: { delay: 1000, state: { progress: 0, lastExecutedTime: 0 } },
 };
@@ -60,7 +60,7 @@ export const DEFAULT_TASK_CONFIG: TaskConfig = {
  * @interface TaskMetadata
  * Represents metadata about the task, such as requester information and additional info.
  */
-export type TaskMetadata = {
+type TaskMetadata = {
   /** Information about the caller requesting the task */
   caller?: {
     name: string; // Name of the requester
@@ -72,7 +72,7 @@ export type TaskMetadata = {
 /**
  * Default metadata for a task, used when no custom metadata is provided.
  */
-export const DEFAULT_TASK_METADATA: TaskMetadata = {
+const DEFAULT_TASK_METADATA: TaskMetadata = {
   caller: {
     name: 'Unknown',
     address: 'Unknown',
@@ -93,7 +93,7 @@ export type TaskResponse = {
  * @interface TaskOptions
  * Represents the various options available for configuring a task.
  */
-export interface TaskOptions {
+interface TaskOptions {
   id?: string; // The unique identifier for the task
   name?: string; // The name of the task
   order?: number; // The order of execution in the workflow
