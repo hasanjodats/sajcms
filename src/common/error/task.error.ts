@@ -19,12 +19,12 @@ export enum TaskErrorType {
  */
 export class TaskError extends GeneralError {
   constructor(
-    task: Task,
-    type: TaskErrorType,
+    public task: Task,
+    public type: TaskErrorType,
     message: string,
     cause?: unknown,
-    code?: string,
-    timestamp = new Date().toISOString(),
+    public code?: string,
+    public timestamp = new Date().toISOString(),
   ) {
     super(
       type,

@@ -19,12 +19,12 @@ export enum WorkflowErrorType {
  */
 export class WorkflowError extends GeneralError {
   constructor(
-    workflow: Workflow,
-    type: WorkflowErrorType,
+    public workflow: Workflow,
+    public type: WorkflowErrorType,
     message: string,
     cause?: unknown,
-    code?: string,
-    timestamp = new Date().toISOString(),
+    public code?: string,
+    public timestamp = new Date().toISOString(),
   ) {
     super(
       type,
