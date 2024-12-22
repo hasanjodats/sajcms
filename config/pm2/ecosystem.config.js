@@ -12,6 +12,7 @@ const common = {
   merge_logs: true,
   shutdown_with_message: true,
   source_map_support: true,
+  watch: process.env.NODE_ENV === 'production' ? false : true,
   instances: process.env.NODE_ENV === 'production' ? 'max' : 1,
   exec_mode: process.env.NODE_ENV === 'production' ? 'cluster' : 'fork',
   ignore_watch: ['node_modules', 'src/**/*.spec.ts'],

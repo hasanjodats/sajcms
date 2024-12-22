@@ -1,4 +1,3 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPlugin from '@typescript-eslint/eslint-plugin';
@@ -10,7 +9,11 @@ export default [
   { files: ['**/*.{js,mjs,cjs,ts,tsx}'] },
   {
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        process: 'readonly',
+        __dirname: 'readonly',
+        module: 'readonly',
+      },
       parser: eslintParser,
       parserOptions: {
         ecmaVersion: 'latest',
@@ -21,9 +24,6 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    env: {
-      node: true,
-    },
     plugins: {
       '@typescript-eslint': eslintPlugin,
       'unused-imports': unusedImports,
