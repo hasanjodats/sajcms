@@ -81,7 +81,7 @@ export class PoolProcessor {
     let inProgressWorkflows = 0;
 
     // Iterate over workflows in the pool storage
-    for (const [_, workflow] of this.workflowStorage) {
+    for (const [, workflow] of this.workflowStorage) {
       try {
         // Process workflows that are not yet completed
         if (workflow.state !== WorkflowState.Completed) {

@@ -21,6 +21,9 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    env: {
+      node: true,
+    },
     plugins: {
       '@typescript-eslint': eslintPlugin,
       'unused-imports': unusedImports,

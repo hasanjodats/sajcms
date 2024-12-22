@@ -5,8 +5,8 @@
   "scripts": {
     "build": "tsc --build",
     "start": "node -r ts-node/register -r tsconfig-paths/register src/microservices/core/index.ts",
-    "start:dev": "NODE_ENV=development DEBUG=true ./node_modules/pm2/bin/pm2-dev start config/pm2/ecosystem.config.js",
-    "start:prod": "NODE_ENV=production DEBUG=false ./node_modules/pm2/bin/pm2 start config/pm2/ecosystem.config.js",
+    "start:dev": "./node_modules/pm2/bin/pm2-dev start config/pm2/ecosystem.config.js --env development",
+    "start:prod": "./node_modules/pm2/bin/pm2 start config/pm2/ecosystem.config.js --env production",
     "pm2": "./node_modules/pm2/bin/pm2 ${npm_config_cmd}",
     "pm2dev": "./node_modules/pm2/bin/pm2-dev ${npm_config_cmd}",
     "prettier-check": "prettier --config .prettierrc --ignore-path .prettierignore './src/microservices/**/*.ts' --check",

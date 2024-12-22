@@ -1,26 +1,19 @@
-require('dotenv').config();
-
-const isDebug = process.env.DEBUG === 'true';
-const nodeEnv = process.env.NODE_ENV || 'development';
-
 const common = {
   interpreter: 'node',
-  interpreter_args: [
-    '-r',
-    'ts-node/register',
-    '-r',
-    'tsconfig-paths/register',
-    ...(isDebug ? ['--inspect=0'] : []),
-  ],
-  env: {
-    NODE_ENV: nodeEnv,
+  interpreter_args: ['-r', 'ts-node/register', '-r', 'tsconfig-paths/register'],
+  env_production: {
+    NODE_ENV: 'production',
+    pmx: 'false',
+  },
+  env_development: {
+    NODE_ENV: 'development',
     pmx: 'false',
   },
   merge_logs: true,
   shutdown_with_message: true,
   source_map_support: true,
-  exec_mode: nodeEnv === 'development' ? 'fork' : 'cluster',
-  instances: nodeEnv === 'development' ? 1 : 'max',
+  instances: process.env.NODE_ENV === 'production' ? 'max' : 1,
+  exec_mode: process.env.NODE_ENV === 'production' ? 'cluster' : 'fork',
   ignore_watch: ['node_modules', 'src/**/*.spec.ts'],
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 const gulp = require('gulp');
 
 gulp.task('hello', function (cb: () => void) {
