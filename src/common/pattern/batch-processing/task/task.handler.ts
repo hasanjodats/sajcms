@@ -27,7 +27,7 @@ export abstract class TaskHandler {
    * @param handler - An instance of the TaskHandler class to be linked as the next handler in the chain.
    * @returns {TaskHandler} - Returns the handler that was set as the next handler.
    */
-  setNext(handler: TaskHandler): TaskHandler {
+  public setNext(handler: TaskHandler): TaskHandler {
     this.nextHandler = handler;
     return handler;
   }
@@ -43,7 +43,7 @@ export abstract class TaskHandler {
    * @param workflow - The workflow that contains the context for the task.
    * @returns {Promise<TaskResponse>} - A promise that resolves to a TaskResponse object, indicating the success or failure of task processing.
    */
-  async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
+  public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
     if (this.nextHandler) {
       // Pass the task to the next handler in the chain.
       return await this.nextHandler.handle(task, workflow);

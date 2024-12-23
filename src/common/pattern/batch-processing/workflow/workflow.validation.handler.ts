@@ -60,7 +60,7 @@ export class WorkflowValidationHandler extends WorkflowHandler {
    * @param workflow - The workflow to validate.
    * @returns A promise resolving to a WorkflowResponse.
    */
-  async handle(workflow: Workflow): Promise<WorkflowResponse> {
+  public async handle(workflow: Workflow): Promise<WorkflowResponse> {
     try {
       logger.info(
         `Workflow ${workflow.name}(${workflow.id}) validation has started.`,

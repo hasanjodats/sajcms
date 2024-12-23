@@ -24,7 +24,7 @@ export class TaskValidationHandler extends TaskHandler {
    * @param workflow - The workflow in which the task is included.
    * @returns {Promise<TaskResponse>} - The result of the validation, either success or failure.
    */
-  async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
+  public async handle(task: Task, workflow: Workflow): Promise<TaskResponse> {
     logger.info(`Task ${task.name}(${task.id}) validation has started.`);
 
     // Check if the task has both a valid name and id

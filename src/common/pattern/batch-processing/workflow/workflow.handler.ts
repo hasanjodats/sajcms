@@ -24,7 +24,7 @@ export abstract class WorkflowHandler {
    * @param handler - An instance of WorkflowHandler class
    * @returns {WorkflowHandler}
    */
-  setNext(handler: WorkflowHandler): WorkflowHandler {
+  public setNext(handler: WorkflowHandler): WorkflowHandler {
     this.nextHandler = handler;
     return handler;
   }
@@ -38,7 +38,7 @@ export abstract class WorkflowHandler {
    * @param workflow - An instance of a workflow
    * @returns {Promise<WorkflowResponse>}
    */
-  async handle(workflow: Workflow): Promise<WorkflowResponse> {
+  public async handle(workflow: Workflow): Promise<WorkflowResponse> {
     if (this.nextHandler) {
       return await this.nextHandler.handle(workflow);
     }

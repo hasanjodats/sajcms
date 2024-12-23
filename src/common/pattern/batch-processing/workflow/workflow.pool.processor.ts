@@ -74,7 +74,6 @@ export class PoolProcessor {
    * This method is triggered by the heartbeat mechanism at regular intervals.
    *
    * @public
-   * @async
    * @returns {Promise<void>} - A promise that resolves when the heartbeat cycle is complete.
    */
   public async heartbeat(): Promise<void> {

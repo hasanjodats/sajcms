@@ -1,7 +1,8 @@
 {
   "name": "ter",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/src/microservices/core/index.js",
+  "typings": "./dist/src/microservices/core/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "start": "node -r ts-node/register -r tsconfig-paths/register src/microservices/core/index.ts",
