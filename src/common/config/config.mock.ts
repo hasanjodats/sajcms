@@ -1,5 +1,8 @@
 import { config as original } from '@common/config/config';
 
+/**
+ * Common test configuration
+ */
 export const config: typeof original = {
   nodeEnv: 'test',
   debug: false,

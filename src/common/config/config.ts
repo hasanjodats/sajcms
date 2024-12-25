@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: __dirname + '/./../../../config/environment/.env' });
 
-// Schema definition for common configuration
+/**
+ * Schema definition for common configuration.
+ */
 const commonSchema = z.object({
   nodeEnv: z.enum(['production', 'development', 'test', 'bdd-test']), // Environment type (production, development, etc.)
   debug: z.boolean(), // Debug mode flag
@@ -46,7 +48,10 @@ const commonSchema = z.object({
   kafkajsNoPartitionerWarning: z.string(), // System exchange string
 });
 
-// Function to create the common configuration from environment variables
+/**
+ * Function to create the common configuration from environment variables.
+ * @param env NodeJS environment
+ */
 function createCommon(env: NodeJS.ProcessEnv) {
   return {
     nodeEnv: env['NODE_ENV'] as string, // Node environment variable (e.g., development, production)
@@ -74,7 +79,9 @@ function createCommon(env: NodeJS.ProcessEnv) {
 // Type alias for the common configuration
 type CommonConfig = ReturnType<typeof createCommon>;
 
-// Function to extend the base configuration with additional configuration
+/**
+ * Function to extend the base configuration with additional configuration.
+ */
 export function extendConfig<ExtendedConfig>(input?: {
   extensionSchema: z.AnyZodObject;
   extensionLoader: (env: NodeJS.ProcessEnv) => ExtendedConfig;
@@ -101,5 +108,7 @@ export function extendConfig<ExtendedConfig>(input?: {
   );
 }
 
-// Final configuration object exported from the module
+/**
+ * Final configuration object exported from the module.
+ */
 export const config = extendConfig();
